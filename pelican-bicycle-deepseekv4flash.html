@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pelican on a Bicycle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    font-family: system-ui, sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 600px;
+    height: 400px;
+  }
+
+  /* Ground */
+  .ground {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #4a4a6a;
+    border-radius: 2px;
+  }
+
+  /* Bicycle */
+  .bike {
+    position: absolute;
+    bottom: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 140px;
+  }
+
+  /* Wheels */
+  .wheel {
+    position: absolute;
+    bottom: 0;
+    width: 80px;
+    height: 80px;
+    border: 4px solid #e0e0e0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  .wheel::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 50%;
+  }
+  .wheel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translate(-50%, -50%) rotate(var(--angle, 0deg));
+    border-radius: 2px;
+    box-shadow: 0 -20px 0 #e0e0e0, 0 20px 0 #e0e0e0, 20px 0 0 #e0e0e0, -20px 0 0 #e0e0e0;
+  }
+  .wheel-back { left: 0; }
+  .wheel-front { right: 0; }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Frame */
+  .frame {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    width: 200px;
+    height: 60px;
+  }
+  .frame-line {
+    position: absolute;
+    background: #e0e0e0;
+    height: 4px;
+    border-radius: 2px;
+    transform-origin: left center;
+  }
+  .f1 { width: 100px; top: 0; left: 40px; transform: rotate(-20deg); }
+  .f2 { width: 80px; top: 30px; left: 0; }
+  .f3 { width: 90px; top: 30px; left: 80px; transform: rotate(15deg); }
+  .f4 { width: 50px; top: 10px; left: 90px; transform: rotate(-50deg); }
+  .f5 { width: 70px; top: 10px; left: 40px; transform: rotate(-50deg); }
+  .seat-post {
+    position: absolute;
+    top: -18px;
+    left: 75px;
+    width: 4px;
+    height: 30px;
+    background: #e0e0e0;
+    border-radius: 2px;
+  }
+  .seat {
+    position: absolute;
+    top: -24px;
+    left: 62px;
+    width: 30px;
+    height: 8px;
+    background: #555;
+    border-radius: 4px;
+  }
+
+  /* Handlebars */
+  .handlebar-post {
+    position: absolute;
+    top: -20px;
+    right: 30px;
+    width: 4px;
+    height: 35px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    transform: rotate(10deg);
+  }
+  .handlebar {
+    position: absolute;
+    top: -28px;
+    right: 15px;
+    width: 30px;
+    height: 4px;
+    background: #555;
+    border-radius: 4px;
+    transform: rotate(5deg);
+  }
+
+  /* Pedals */
+  .pedal-crank {
+    position: absolute;
+    bottom: -30px;
+    left: 78px;
+    width: 4px;
+    height: 36px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    transform-origin: center 4px;
+    animation: pedal 0.5s ease-in-out infinite alternate;
+  }
+  .pedal {
+    position: absolute;
+    bottom: -4px;
+    left: -8px;
+    width: 20px;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+  }
+
+  @keyframes pedal {
+    from { transform: rotate(-20deg); }
+    to { transform: rotate(20deg); }
+  }
+
+  /* Pelican */
+  .pelican {
+    position: absolute;
+    bottom: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 90px;
+    animation: bounce 0.3s ease-in-out infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateX(-50%) translateY(0); }
+    to { transform: translateX(-50%) translateY(-3px); }
+  }
+
+  /* Body */
+  .body {
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    width: 70px;
+    height: 55px;
+    background: #1a1a1a;
+    border-radius: 50% 50% 45% 45%;
+  }
+
+  /* Wing */
+  .wing {
+    position: absolute;
+    top: 8px;
+    left: -5px;
+    width: 50px;
+    height: 30px;
+    background: #2a2a2a;
+    border-radius: 50% 50% 0 0;
+    transform-origin: right center;
+    animation: flap 0.4s ease-in-out infinite alternate;
+  }
+  @keyframes flap {
+    from { transform: rotate(-10deg) scaleY(1); }
+    to { transform: rotate(20deg) scaleY(0.8); }
+  }
+
+  /* Neck */
+  .neck {
+    position: absolute;
+    top: -30px;
+    left: 60px;
+    width: 16px;
+    height: 35px;
+    background: #1a1a1a;
+    border-radius: 8px 8px 4px 4px;
+    transform: rotate(10deg);
+    transform-origin: bottom center;
+    animation: neck-bob 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes neck-bob {
+    from { transform: rotate(5deg); }
+    to { transform: rotate(15deg); }
+  }
+
+  /* Head */
+  .head {
+    position: absolute;
+    top: -48px;
+    left: 52px;
+    width: 38px;
+    height: 30px;
+    background: #1a1a1a;
+    border-radius: 50% 50% 40% 40%;
+    animation: head-bob 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes head-bob {
+    from { transform: rotate(-3deg); }
+    to { transform: rotate(3deg); }
+  }
+
+  /* Beak */
+  .beak-upper {
+    position: absolute;
+    top: -42px;
+    left: 78px;
+    width: 30px;
+    height: 8px;
+    background: #ff8c00;
+    border-radius: 0 8px 4px 0;
+    transform-origin: left center;
+    animation: beak-chatter 0.2s ease-in-out infinite alternate;
+  }
+  .beak-lower {
+    position: absolute;
+    top: -35px;
+    left: 78px;
+    width: 28px;
+    height: 6px;
+    background: #e07800;
+    border-radius: 0 4px 8px 0;
+    animation: beak-chatter 0.2s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes beak-chatter {
+    from { transform: rotate(-2deg); }
+    to { transform: rotate(4deg); }
+  }
+
+  /* Pouch (pelican throat) */
+  .pouch {
+    position: absolute;
+    top: -28px;
+    left: 60px;
+    width: 20px;
+    height: 14px;
+    background: #ffa500;
+    border-radius: 0 0 10px 10px;
+    opacity: 0.6;
+  }
+
+  /* Eye */
+  .eye {
+    position: absolute;
+    top: -42px;
+    left: 72px;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+  .eye::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 4px;
+    height: 4px;
+    background: #111;
+    border-radius: 50%;
+    animation: look 2s ease-in-out infinite;
+  }
+  @keyframes look {
+    0%, 70% { transform: translateX(0); }
+    75%, 90% { transform: translateX(2px); }
+    95%, 100% { transform: translateX(0); }
+  }
+
+  /* Tail feathers */
+  .tail {
+    position: absolute;
+    bottom: 25px;
+    left: 8px;
+    width: 20px;
+    height: 3px;
+    background: #2a2a2a;
+    border-radius: 2px;
+    transform: rotate(-20deg);
+    box-shadow: 0 -6px 0 #2a2a2a, 0 -12px 0 #2a2a2a;
+  }
+
+  /* Legs */
+  .leg {
+    position: absolute;
+    bottom: -10px;
+    width: 4px;
+    height: 20px;
+    background: #ff8c00;
+    border-radius: 2px;
+    transform-origin: top center;
+    animation: leg-pedal 0.5s ease-in-out infinite alternate;
+  }
+  .leg-left { left: 38px; }
+  .leg-right {
+    left: 52px;
+    animation-delay: 0.25s;
+  }
+
+  @keyframes leg-pedal {
+    from { transform: rotate(-25deg); }
+    to { transform: rotate(25deg); }
+  }
+
+  /* Clouds */
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50px;
+    animation: cloud-drift 20s linear infinite;
+  }
+  .cloud-1 {
+    top: 40px; left: -100px;
+    width: 120px; height: 30px;
+    animation-duration: 25s;
+  }
+  .cloud-2 {
+    top: 80px; left: -200px;
+    width: 90px; height: 22px;
+    animation-duration: 30s;
+    animation-delay: -10s;
+  }
+  .cloud-3 {
+    top: 20px; left: -150px;
+    width: 70px; height: 18px;
+    animation-duration: 22s;
+    animation-delay: -5s;
+  }
+
+  @keyframes cloud-drift {
+    to { transform: translateX(800px); }
+  }
+
+  /* Stars */
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .title {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <!-- Stars -->
+  <div class="star" style="top:20px;left:50px;animation-delay:0s"></div>
+  <div class="star" style="top:60px;left:150px;animation-delay:0.7s"></div>
+  <div class="star" style="top:30px;left:300px;animation-delay:1.2s"></div>
+  <div class="star" style="top:70px;left:450px;animation-delay:0.3s"></div>
+  <div class="star" style="top:15px;left:520px;animation-delay:1.8s"></div>
+  <div class="star" style="top:90px;left:380px;animation-delay:0.5s"></div>
+
+  <!-- Clouds -->
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <!-- Ground -->
+  <div class="ground"></div>
+
+  <!-- Bicycle -->
+  <div class="bike">
+    <!-- Wheels -->
+    <div class="wheel wheel-back"></div>
+    <div class="wheel wheel-front"></div>
+
+    <!-- Frame -->
+    <div class="frame">
+      <div class="frame-line f1"></div>
+      <div class="frame-line f2"></div>
+      <div class="frame-line f3"></div>
+      <div class="frame-line f4"></div>
+      <div class="frame-line f5"></div>
+      <div class="seat-post"></div>
+      <div class="seat"></div>
+      <div class="handlebar-post"></div>
+      <div class="handlebar"></div>
+    </div>
+
+    <!-- Pedals -->
+    <div class="pedal-crank">
+      <div class="pedal"></div>
+    </div>
+  </div>
+
+  <!-- Pelican -->
+  <div class="pelican">
+    <div class="body"></div>
+    <div class="wing"></div>
+    <div class="tail"></div>
+    <div class="neck"></div>
+    <div class="head"></div>
+    <div class="eye"></div>
+    <div class="beak-upper"></div>
+    <div class="beak-lower"></div>
+    <div class="pouch"></div>
+    <div class="leg leg-left"></div>
+    <div class="leg leg-right"></div>
+  </div>
+
+  <div class="title">Pelican on a Bicycle</div>
+</div>
+</body>
+</html>

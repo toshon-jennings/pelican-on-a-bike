@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pelican on a Bicycle - nemotron</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #98D8E8 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .scene {
+      position: relative;
+      width: 800px;
+      height: 400px;
+    }
+    
+    /* Ground */
+    .ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(180deg, #8FBC8F 0%, #6B8E5A 100%);
+      border-top: 3px solid #556B2F;
+    }
+    
+    .grass-blade {
+      position: absolute;
+      bottom: 60px;
+      width: 4px;
+      height: 20px;
+      background: #6B8E5A;
+      border-radius: 2px 2px 0 0;
+      transform-origin: bottom center;
+      animation: sway 3s ease-in-out infinite;
+    }
+    
+    @keyframes sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    
+    /* Clouds */
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.9;
+      animation: floatCloud 20s linear infinite;
+    }
+    
+    .cloud::before,
+    .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    
+    .cloud-1 {
+      width: 80px;
+      height: 30px;
+      top: 50px;
+      left: -100px;
+    }
+    .cloud-1::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+    .cloud-1::after { width: 50px; height: 50px; top: -25px; left: 40px; }
+    .cloud-1 { animation-duration: 25s; }
+    
+    .cloud-2 {
+      width: 100px;
+      height: 40px;
+      top: 100px;
+      left: -150px;
+    }
+    .cloud-2::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+    .cloud-2::after { width: 60px; height: 60px; top: -30px; left: 55px; }
+    .cloud-2 { animation-duration: 30s; animation-delay: -10s; }
+    
+    .cloud-3 {
+      width: 70px;
+      height: 25px;
+      top: 30px;
+      left: -80px;
+    }
+    .cloud-3::before { width: 35px; height: 35px; top: -18px; left: 8px; }
+    .cloud-3::after { width: 45px; height: 45px; top: -22px; left: 35px; }
+    .cloud-3 { animation-duration: 22s; animation-delay: -5s; }
+    
+    @keyframes floatCloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(900px); }
+    }
+    
+    /* Sun */
+    .sun {
+      position: absolute;
+      top: 50px;
+      right: 50px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+      animation: pulseSun 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulseSun {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+      50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+    }
+    
+    /* Bicycle */
+    .bicycle {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bikeMove 4s ease-in-out infinite;
+    }
+    
+    @keyframes bikeMove {
+      0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      25% { transform: translateX(-50%) translateY(-3px) rotate(0.5deg); }
+      50% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      75% { transform: translateX(-50%) translateY(-2px) rotate(-0.5deg); }
+    }
+    
+    /* Wheels */
+    .wheel {
+      position: absolute;
+      border: 4px solid #333;
+      border-radius: 50%;
+      background: transparent;
+    }
+    
+    .wheel-front {
+      width: 60px;
+      height: 60px;
+      left: 120px;
+      bottom: 0;
+      animation: wheelSpin 0.8s linear infinite;
+    }
+    
+    .wheel-back {
+      width: 60px;
+      height: 60px;
+      left: 0;
+      bottom: 0;
+      animation: wheelSpin 0.8s linear infinite;
+    }
+    
+    @keyframes wheelSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .spoke {
+      position: absolute;
+      width: 2px;
+      height: 30px;
+      background: #555;
+      top: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+    }
+    
+    .wheel-front .spoke:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
+    .wheel-front .spoke:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); }
+    .wheel-front .spoke:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
+    .wheel-front .spoke:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); }
+    .wheel-front .spoke:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
+    .wheel-front .spoke:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); }
+    .wheel-front .spoke:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
+    .wheel-front .spoke:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); }
+    
+    .wheel-back .spoke:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
+    .wheel-back .spoke:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); }
+    .wheel-back .spoke:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
+    .wheel-back .spoke:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); }
+    .wheel-back .spoke:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
+    .wheel-back .spoke:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); }
+    .wheel-back .spoke:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
+    .wheel-back .spoke:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); }
+    
+    /* Bike Frame */
+    .frame {
+      position: absolute;
+      background: #2C3E50;
+    }
+    
+    .top-tube {
+      width: 100px;
+      height: 4px;
+      left: 20px;
+      bottom: 45px;
+      border-radius: 2px;
+    }
+    
+    .down-tube {
+      width: 4px;
+      height: 45px;
+      left: 20px;
+      bottom: 0;
+      border-radius: 2px;
+    }
+    
+    .seat-tube {
+      width: 4px;
+      height: 50px;
+      left: 100px;
+      bottom: 0;
+      border-radius: 2px;
+    }
+    
+    .chain-stay {
+      width: 80px;
+      height: 4px;
+      left: 20px;
+      bottom: 0;
+      border-radius: 2px;
+    }
+    
+    .seat-stay {
+      width: 4px;
+      height: 40px;
+      left: 100px;
+      bottom: 5px;
+      border-radius: 2px;
+      transform: rotate(-15deg);
+      transform-origin: bottom left;
+    }
+    
+    .fork {
+      width: 4px;
+      height: 55px;
+      left: 148px;
+      bottom: 0;
+      border-radius: 2px;
+      transform: rotate(-5deg);
+      transform-origin: bottom center;
+    }
+    
+    .handlebar {
+      width: 30px;
+      height: 4px;
+      left: 135px;
+      bottom: 55px;
+      background: #2C3E50;
+      border-radius: 2px;
+    }
+    
+    .grip-left, .grip-right {
+      width: 4px;
+      height: 15px;
+      background: #8B4513;
+      border-radius: 2px;
+      bottom: 55px;
+    }
+    .grip-left { left: 135px; }
+    .grip-right { left: 161px; }
+    
+    /* Seat */
+    .seat {
+      position: absolute;
+      width: 25px;
+      height: 8px;
+      background: #8B4513;
+      border-radius: 4px 4px 0 0;
+      left: 90px;
+      bottom: 50px;
+    }
+    
+    .seat-post {
+      width: 4px;
+      height: 20px;
+      background: #2C3E50;
+      left: 100px;
+      bottom: 50px;
+      border-radius: 2px;
+    }
+    
+    /* Pedals */
+    .pedal-arm {
+      position: absolute;
+      width: 4px;
+      height: 35px;
+      background: #2C3E50;
+      left: 28px;
+      bottom: 30px;
+      border-radius: 2px;
+      transform-origin: top center;
+      animation: pedalRotate 1.6s linear infinite;
+    }
+    
+    .pedal {
+      width: 15px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      position: absolute;
+      bottom: 0;
+      left: -6px;
+    }
+    
+    @keyframes pedalRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Pelican */
+    .pelican {
+      position: absolute;
+      left: 70px;
+      bottom: 65px;
+      animation: pelicanBounce 0.8s ease-in-out infinite;
+    }
+    
+    @keyframes pelicanBounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(1deg); }
+    }
+    
+    /* Pelican Body */
+    .pelican-body {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .body-main {
+      width: 70px;
+      height: 45px;
+      background: #FFF8F0;
+      border-radius: 50% 50% 40% 40%;
+      border: 2px solid #E8DCC8;
+      position: relative;
+      box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1);
+    }
+    
+    .body-main::before {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 20px;
+      background: #FFF0E0;
+      border-radius: 50%;
+      left: 10px;
+      bottom: 5px;
+      border: 2px solid #E8DCC8;
+      border-top: none;
+    }
+    
+    /* Wing */
+    .wing {
+      position: absolute;
+      width: 50px;
+      height: 25px;
+      background: #FFF8F0;
+      border: 2px solid #E8DCC8;
+      border-radius: 0 50% 50% 0;
+      right: -20px;
+      top: 10px;
+      transform-origin: left center;
+      animation: wingFlap 2s ease-in-out infinite;
+      z-index: 5;
+    }
+    
+    @keyframes wingFlap {
+      0%, 100% { transform: rotate(0deg) scaleY(1); }
+      50% { transform: rotate(-30deg) scaleY(0.7); }
+    }
+    
+    .wing-feather {
+      position: absolute;
+      width: 15px;
+      height: 6px;
+      background: #F0E8D8;
+      border-radius: 50%;
+      right: 2px;
+    }
+    .wing-feather:nth-child(1) { top: 2px; }
+    .wing-feather:nth-child(2) { top: 10px; }
+    .wing-feather:nth-child(3) { top: 18px; }
+    
+    /* Neck */
+    .neck {
+      position: absolute;
+      width: 18px;
+      height: 50px;
+      background: #FFF8F0;
+      border: 2px solid #E8DCC8;
+      border-radius: 10px;
+      left: 50px;
+      top: -30px;
+      transform: rotate(-20deg);
+      transform-origin: bottom center;
+      z-index: 8;
+      animation: neckSway 3s ease-in-out infinite;
+    }
+    
+    @keyframes neckSway {
+      0%, 100% { transform: rotate(-20deg); }
+      50% { transform: rotate(-15deg); }
+    }
+    
+    .neck::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 50px;
+      background: #FFF0E0;
+      border-radius: 10px;
+      left: 2px;
+      border: 2px solid #E8DCC8;
+      border-top: none;
+      border-right: none;
+    }
+    
+    /* Head */
+    .head {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      background: #FFF8F0;
+      border: 2px solid #E8DCC8;
+      border-radius: 50%;
+      left: 60px;
+      top: -65px;
+      z-index: 10;
+      animation: headBob 2s ease-in-out infinite;
+    }
+    
+    @keyframes headBob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(2deg); }
+    }
+    
+    /* Beak */
+    .beak {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 50px solid #FF8C00;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      left: 35px;
+      top: 5px;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+      animation: beakOpen 3s ease-in-out infinite;
+    }
+    
+    @keyframes beakOpen {
+      0%, 80%, 100% { border-left: 50px solid #FF8C00; border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+      90% { border-left: 50px solid #FF8C00; border-top: 18px solid transparent; border-bottom: 18px solid transparent; }
+    }
+    
+    .beak-lower {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 45px solid #E67E00;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      left: 35px;
+      top: 19px;
+      animation: beakLowerOpen 3s ease-in-out infinite;
+    }
+    
+    @keyframes beakLowerOpen {
+      0%, 80%, 100% { border-left: 45px solid #E67E00; border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+      90% { border-left: 45px solid #E67E00; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+    }
+    
+    .beak-pouch {
+      position: absolute;
+      width: 35px;
+      height: 20px;
+      background: #FFD4A3;
+      border: 2px solid #E6B880;
+      border-radius: 0 0 20px 20px;
+      left: 35px;
+      top: 27px;
+      animation: pouchExpand 3s ease-in-out infinite;
+      z-index: -1;
+    }
+    
+    @keyframes pouchExpand {
+      0%, 80%, 100% { transform: scaleY(1); }
+      90% { transform: scaleY(1.5); }
+    }
+    
+    /* Eyes */
+    .eye {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #2C3E50;
+      border-radius: 50%;
+      top: 8px;
+      animation: blink 4s ease-in-out infinite;
+    }
+    
+    .eye-left { left: 12px; }
+    .eye-right { left: 22px; }
+    
+    .eye::before {
+      content: '';
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      top: 1px;
+      left: 2px;
+    }
+    
+    @keyframes blink {
+      0%, 45%, 55%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.1); }
+    }
+    
+    /* Eye patch / eyebrow */
+    .eyebrow {
+      position: absolute;
+      width: 18px;
+      height: 3px;
+      background: #2C3E50;
+      border-radius: 2px;
+      top: 4px;
+      left: 8px;
+      transform: rotate(-10deg);
+    }
+    
+    /* Legs */
+    .leg {
+      position: absolute;
+      width: 5px;
+      height: 35px;
+      background: #FF8C00;
+      border-radius: 3px;
+      bottom: -35px;
+      z-index: 5;
+    }
+    
+    .leg-left { left: 25px; animation: legPedalLeft 1.6s linear infinite; }
+    .leg-right { left: 45px; animation: legPedalRight 1.6s linear infinite; }
+    
+    @keyframes legPedalLeft {
+      0% { transform: rotate(0deg) translateX(0); }
+      25% { transform: rotate(90deg) translateX(10px); }
+      50% { transform: rotate(180deg) translateX(0); }
+      75% { transform: rotate(270deg) translateX(-10px); }
+      100% { transform: rotate(360deg) translateX(0); }
+    }
+    
+    @keyframes legPedalRight {
+      0% { transform: rotate(180deg) translateX(0); }
+      25% { transform: rotate(270deg) translateX(-10px); }
+      50% { transform: rotate(0deg) translateX(0); }
+      75% { transform: rotate(90deg) translateX(10px); }
+      100% { transform: rotate(540deg) translateX(0); }
+    }
+    
+    .foot {
+      position: absolute;
+      width: 18px;
+      height: 6px;
+      background: #FF8C00;
+      border-radius: 3px;
+      bottom: -3px;
+      left: -7px;
+    }
+    
+    .toe {
+      position: absolute;
+      width: 4px;
+      height: 12px;
+      background: #FF8C00;
+      border-radius: 2px;
+      bottom: 3px;
+    }
+    .toe-1 { left: 2px; }
+    .toe-2 { left: 7px; }
+    .toe-3 { left: 12px; }
+    
+    /* Tail */
+    .tail {
+      position: absolute;
+      width: 20px;
+      height: 30px;
+      background: #FFF8F0;
+      border: 2px solid #E8DCC8;
+      border-radius: 0 0 20px 20px;
+      right: -10px;
+      bottom: 5px;
+      transform: rotate(10deg);
+      z-index: 3;
+      animation: tailWag 2s ease-in-out infinite;
+    }
+    
+    @keyframes tailWag {
+      0%, 100% { transform: rotate(10deg); }
+      50% { transform: rotate(20deg); }
+    }
+    
+    .tail-feather {
+      position: absolute;
+      width: 16px;
+      height: 6px;
+      background: #F0E8D8;
+      border-radius: 50%;
+      right: 2px;
+    }
+    .tail-feather:nth-child(1) { bottom: 2px; }
+    .tail-feather:nth-child(2) { bottom: 10px; }
+    .tail-feather:nth-child(3) { bottom: 18px; }
+    .tail-feather:nth-child(4) { bottom: 26px; }
+    
+    /* Helmet */
+    .helmet {
+      position: absolute;
+      width: 45px;
+      height: 25px;
+      background: linear-gradient(180deg, #3498DB, #2980B9);
+      border-radius: 50% 50% 20% 20%;
+      left: 55px;
+      top: -75px;
+      z-index: 12;
+      border: 2px solid #1A5276;
+      animation: helmetBob 2s ease-in-out infinite;
+    }
+    
+    @keyframes helmetBob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(2deg); }
+    }
+    
+    .helmet-stripe {
+      position: absolute;
+      width: 45px;
+      height: 4px;
+      background: #F39C12;
+      top: 10px;
+      border-radius: 2px;
+    }
+    
+    .helmet-vent {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #1A5276;
+      border-radius: 50%;
+    }
+    .helmet-vent:nth-child(3) { left: 5px; top: 5px; }
+    .helmet-vent:nth-child(4) { left: 18px; top: 3px; }
+    .helmet-vent:nth-child(5) { left: 32px; top: 5px; }
+    
+    /* Title */
+    .title {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: #2C3E50;
+      text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    }
+    
+    .title h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #2C3E50, #3498DB, #FF8C00, #27AE60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleFloat 3s ease-in-out infinite;
+    }
+    
+    .title p {
+      font-size: 1rem;
+      color: #7F8C8D;
+      margin-top: 5px;
+    }
+    
+    @keyframes titleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    /* Speed lines */
+    .speed-lines {
+      position: absolute;
+      left: -50px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: speedLinesMove 1s linear infinite;
+    }
+    
+    .speed-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.6), transparent);
+      margin: 8px 0;
+      border-radius: 2px;
+      animation: lineFade 1s linear infinite;
+    }
+    
+    .speed-line:nth-child(1) { animation-delay: 0s; }
+    .speed-line:nth-child(2) { animation-delay: 0.2s; }
+    .speed-line:nth-child(3) { animation-delay: 0.4s; }
+    .speed-line:nth-child(4) { animation-delay: 0.6s; }
+    .speed-line:nth-child(5) { animation-delay: 0.8s; }
+    
+    @keyframes speedLinesMove {
+      0% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    
+    @keyframes lineFade {
+      0% { opacity: 0; transform: translateX(-20px); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(20px); }
+    }
+    
+    /* Particles */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(52, 152, 219, 0.6);
+      border-radius: 50%;
+      bottom: 60px;
+      left: 180px;
+      animation: particleFloat 2s ease-out infinite;
+    }
+    
+    .particle:nth-child(1) { animation-delay: 0s; left: 170px; }
+    .particle:nth-child(2) { animation-delay: 0.4s; left: 160px; }
+    .particle:nth-child(3) { animation-delay: 0.8s; left: 150px; }
+    .particle:nth-child(4) { animation-delay: 1.2s; left: 175px; }
+    .particle:nth-child(5) { animation-delay: 1.6s; left: 155px; }
+    
+    @keyframes particleFloat {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(-100px, -80px) scale(0); opacity: 0; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 900px) {
+      .scene {
+        transform: scale(0.8);
+        transform-origin: center center;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .scene {
+        transform: scale(0.6);
+      }
+      .title h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="title">
+      <h1>Pelican on a Bicycle</h1>
+      <p>Powered by nemotron</p>
+    </div>
+    
+    <!-- Sun -->
+    <div class="sun"></div>
+    
+    <!-- Clouds -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    
+    <!-- Ground -->
+    <div class="ground">
+      <div class="grass-blade" style="left: 10%; animation-delay: 0s;"></div>
+      <div class="grass-blade" style="left: 15%; animation-delay: 0.3s;"></div>
+      <div class="grass-blade" style="left: 20%; animation-delay: 0.6s;"></div>
+      <div class="grass-blade" style="left: 25%; animation-delay: 0.9s;"></div>
+      <div class="grass-blade" style="left: 30%; animation-delay: 1.2s;"></div>
+      <div class="grass-blade" style="left: 35%; animation-delay: 1.5s;"></div>
+      <div class="grass-blade" style="left: 40%; animation-delay: 1.8s;"></div>
+      <div class="grass-blade" style="left: 45%; animation-delay: 2.1s;"></div>
+      <div class="grass-blade" style="left: 50%; animation-delay: 2.4s;"></div>
+      <div class="grass-blade" style="left: 55%; animation-delay: 2.7s;"></div>
+      <div class="grass-blade" style="left: 60%; animation-delay: 3s;"></div>
+      <div class="grass-blade" style="left: 65%; animation-delay: 0.1s;"></div>
+      <div class="grass-blade" style="left: 70%; animation-delay: 0.4s;"></div>
+      <div class="grass-blade" style="left: 75%; animation-delay: 0.7s;"></div>
+      <div class="grass-blade" style="left: 80%; animation-delay: 1s;"></div>
+      <div class="grass-blade" style="left: 85%; animation-delay: 1.3s;"></div>
+      <div class="grass-blade" style="left: 90%; animation-delay: 1.6s;"></div>
+      <div class="grass-blade" style="left: 95%; animation-delay: 1.9s;"></div>
+    </div>
+    
+    <!-- Bicycle -->
+    <div class="bicycle">
+      <!-- Wheels -->
+      <div class="wheel wheel-back">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      <div class="wheel wheel-front">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      
+      <!-- Frame -->
+      <div class="frame top-tube"></div>
+      <div class="frame down-tube"></div>
+      <div class="frame seat-tube"></div>
+      <div class="frame chain-stay"></div>
+      <div class="frame seat-stay"></div>
+      <div class="frame fork"></div>
+      <div class="handlebar"></div>
+      <div class="grip-left"></div>
+      <div class="grip-right"></div>
+      
+      <!-- Seat -->
+      <div class="seat-post"></div>
+      <div class="seat"></div>
+      
+      <!-- Pedals -->
+      <div class="pedal-arm">
+        <div class="pedal"></div>
+      </div>
+      
+      <!-- Speed lines -->
+      <div class="speed-lines">
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+      </div>
+      
+      <!-- Particles -->
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    
+    <!-- Pelican -->
+    <div class="pelican">
+      <div class="pelican-body">
+        <div class="body-main">
+          <div class="wing">
+            <div class="wing-feather"></div>
+            <div class="wing-feather"></div>
+            <div class="wing-feather"></div>
+          </div>
+        </div>
+        <div class="tail">
+          <div class="tail-feather"></div>
+          <div class="tail-feather"></div>
+          <div class="tail-feather"></div>
+          <div class="tail-feather"></div>
+        </div>
+        <div class="neck"></div>
+        <div class="head">
+          <div class="eyebrow"></div>
+          <div class="eye eye-left"></div>
+          <div class="eye eye-right"></div>
+          <div class="beak"></div>
+          <div class="beak-lower"></div>
+          <div class="beak-pouch"></div>
+        </div>
+        <div class="helmet">
+          <div class="helmet-stripe"></div>
+          <div class="helmet-vent"></div>
+          <div class="helmet-vent"></div>
+          <div class="helmet-vent"></div>
+          <div class="helmet-vent"></div>
+          <div class="helmet-vent"></div>
+        </div>
+        <div class="leg leg-left">
+          <div class="foot">
+            <div class="toe toe-1"></div>
+            <div class="toe toe-2"></div>
+            <div class="toe toe-3"></div>
+          </div>
+        </div>
+        <div class="leg leg-right">
+          <div class="foot">
+            <div class="toe toe-1"></div>
+            <div class="toe toe-2"></div>
+            <div class="toe toe-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

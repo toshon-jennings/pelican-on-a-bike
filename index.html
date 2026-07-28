@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pelican on a Bike — Model Tests</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 40%, #98D8E8 100%);
+      min-height: 100vh;
+      color: #1a2a3a;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin-top: 0.75rem;
+      font-size: 1.05rem;
+      opacity: 0.85;
+      max-width: 36rem;
+      margin-inline: auto;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      padding: 0 1.5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-preview {
+      height: 140px;
+      background: linear-gradient(180deg, #87CEEB 0%, #8FBC8F 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .card-body {
+      padding: 1rem 1.15rem 1.25rem;
+    }
+
+    .card-body h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .card-body span {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    footer a {
+      color: inherit;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚲 Pelican on a Bike</h1>
+    <p>CSS animation tests from different AI models. Each link opens a standalone demo. New tests are added as models are tried.</p>
+  </header>
+
+  <main class="grid" id="gallery"></main>
+
+  <footer>
+    <a href="https://github.com/toshon-jennings/pelican-on-a-bike">View on GitHub</a>
+  </footer>
+
+  <script>
+    const tests = [
+      { file: "bigpickle-pelican-bike.html", model: "Big Pickle" },
+      { file: "ling-pelican-bike.html", model: "Ling" },
+      { file: "mimov2.5-pelican-bicycle.html", model: "Mimo v2.5" },
+      { file: "northminicode-pelican-bicycle.html", model: "North Mini Code" },
+      { file: "pelican-bicycle-deepseekv4flash.html", model: "DeepSeek v4 Flash" },
+      { file: "pelican-bicycle-lagunas2.1.html", model: "Lagunas 2.1" },
+      { file: "pelican-bicycle-nemotron.html", model: "Nemotron" },
+    ];
+
+    const gallery = document.getElementById("gallery");
+
+    for (const test of tests) {
+      const link = document.createElement("a");
+      link.className = "card";
+      link.href = test.file;
+      link.innerHTML = `
+        <div class="card-preview">🦢</div>
+        <div class="card-body">
+          <h2>${test.model}</h2>
+          <span>${test.file}</span>
+        </div>
+      `;
+      gallery.appendChild(link);
+    }
+  </script>
+</body>
+</html>

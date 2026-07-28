@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Pickle Pelican on a Bike</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#87CEEB;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:sans-serif}
+.scene{position:relative;width:800px;height:500px}
+.ground{position:absolute;bottom:0;left:0;width:100%;height:60px;background:linear-gradient(#7ec850,#5da832);border-radius:30px 30px 0 0}
+.clouds{position:absolute;top:30px;width:100%;height:40px}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.9}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.cloud1{width:120px;height:36px;top:0;animation:drift 20s linear infinite}
+.cloud1::before{width:50px;height:50px;top:-20px;left:20px}
+.cloud1::after{width:36px;height:36px;top:-12px;left:60px}
+.cloud2{width:100px;height:30px;top:20px;animation:drift 25s linear infinite;animation-delay:-8s}
+.cloud2::before{width:40px;height:40px;top:-18px;left:15px}
+.cloud2::after{width:30px;height:30px;top:-10px;left:50px}
+@keyframes drift{from{transform:translateX(-200px)}to{transform:translateX(900px)}}
+.sun{position:absolute;top:20px;right:40px;width:70px;height:70px;background:#FFD700;border-radius:50%;box-shadow:0 0 60px #FFD700;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.bike-group{position:absolute;bottom:60px;left:250px;animation:ride .12s linear infinite}
+@keyframes ride{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+.pelican{position:relative;width:160px;height:140px;margin-left:30px}
+.body{position:absolute;bottom:30px;left:20px;width:100px;height:80px;background:#fff;border-radius:50% 50% 45% 45%;border:2px solid #333;overflow:hidden}
+.belly{position:absolute;bottom:5px;left:15px;width:70px;height:50px;background:#f5f5f5;border-radius:50%}
+.wing{position:absolute;bottom:25px;left:-5px;width:85px;height:45px;background:#ddd;border-radius:0 60% 60% 0;border:2px solid #333;transform-origin:left center;animation:flap .8s ease-in-out infinite alternate;border-left:none;z-index:1}
+@keyframes flap{0%{transform:rotate(-15deg)}100%{transform:rotate(15deg)}}
+.neck{position:absolute;bottom:95px;left:65px;width:30px;height:50px;background:#fff;border-radius:10px;border:2px solid #333;transform:rotate(10deg);transform-origin:bottom center;z-index:2;animation:bob 1s ease-in-out infinite alternate}
+@keyframes bob{0%{transform:rotate(5deg)}100%{transform:rotate(15deg)}}
+.head{position:absolute;bottom:130px;left:60px;width:55px;height:50px;background:#fff;border-radius:50%;border:2px solid #333;z-index:3;animation:bobHead 1s ease-in-out infinite alternate}
+@keyframes bobHead{0%{transform:rotate(-5deg)}100%{transform:rotate(5deg)}}
+.beak{position:absolute;top:10px;left:-12px;width:45px;height:20px;background:#FF8C00;border-radius:0 10px 10px 0;border:2px solid #333;border-left:none;transform:rotate(-5deg)}
+.beak-tip{position:absolute;top:2px;left:-24px;width:20px;height:12px;background:#FF8C00;border-radius:10px 0 0 10px;border:2px solid #333;border-right:none}
+.beak-bottom{position:absolute;top:16px;left:-12px;width:35px;height:10px;background:#e07800;border-radius:0 5px 5px 0;border:2px solid #333;border-left:none}
+.eye{position:absolute;top:12px;left:20px;width:12px;height:13px;background:#333;border-radius:50%}
+.eye::after{content:'';position:absolute;top:2px;left:3px;width:4px;height:4px;background:#fff;border-radius:50%}
+.pouch{position:absolute;bottom:10px;left:30px;width:40px;height:25px;background:#FFB347;border-radius:0 0 20px 20px;border:2px solid #333;border-top:none;opacity:.7}
+
+.bicycle{position:absolute;bottom:0;left:0;width:200px;height:100px}
+.frame{position:absolute}
+.tube1{position:absolute;top:55px;left:18px;width:100px;height:4px;background:#333;transform:rotate(-30deg);transform-origin:left center;border-radius:2px}
+.tube2{position:absolute;top:38px;left:50px;width:68px;height:4px;background:#333;transform:rotate(20deg);transform-origin:left center;border-radius:2px}
+.tube3{position:absolute;top:20px;left:50px;width:4px;height:55px;background:#333;border-radius:2px}
+.tube4{position:absolute;top:20px;left:18px;width:4px;height:55px;background:#333;border-radius:2px;transform:rotate(-8deg)}
+
+.wheel{position:absolute;bottom:0;width:60px;height:60px;background:none;border:4px solid #333;border-radius:50%;animation:spin 1s linear infinite}
+.wheel::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#666;border-radius:50%}
+.spoke{position:absolute;top:50%;left:50%;width:2px;height:26px;background:#999;transform-origin:center center}
+.spoke:nth-child(1){transform:translate(-50%,-50%) rotate(0deg)}
+.spoke:nth-child(2){transform:translate(-50%,-50%) rotate(45deg)}
+.spoke:nth-child(3){transform:translate(-50%,-50%) rotate(90deg)}
+.spoke:nth-child(4){transform:translate(-50%,-50%) rotate(135deg)}
+.wheel-b{left:120px}
+.wheel-f{left:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.handlebar{position:absolute;top:10px;left:2px;width:25px;height:4px;background:#333;border-radius:2px;transform:rotate(20deg)}
+.handlebar::after{content:'';position:absolute;top:-6px;left:15px;width:4px;height:14px;background:#333;border-radius:2px;transform:rotate(-20deg)}
+.seat{position:absolute;top:10px;left:45px;width:30px;height:6px;background:#555;border-radius:4px;transform:rotate(-5deg)}
+.seat-post{position:absolute;top:16px;left:57px;width:3px;height:20px;background:#333;transform:rotate(-5deg)}
+.pedal-area{position:absolute;bottom:2px;left:48px}
+.pedal{position:absolute;width:20px;height:4px;background:#333;border-radius:2px;animation:pedalRotate 1s linear infinite;transform-origin:12px 2px}
+.pedal:nth-child(2){animation-delay:.5s}
+@keyframes pedalRotate{0%{transform:rotate(0deg) translateY(-8px)}25%{transform:rotate(90deg) translateY(-8px)}50%{transform:rotate(180deg) translateY(-8px)}75%{transform:rotate(270deg) translateY(-8px)}100%{transform:rotate(360deg) translateY(-8px)}}
+.chain{position:absolute;bottom:18px;left:8px;width:110px;height:2px;background:#666;border-radius:1px;border:1px dashed #999}
+.leg-l,.leg-r{position:absolute;bottom:18px;width:6px;height:35px;background:#FFB347;border-radius:3px;border:1px solid #333;z-index:1;transform-origin:top center}
+.leg-l{left:52px;animation:pedalLeg 1s linear infinite}
+.leg-r{left:52px;animation:pedalLeg 1s linear infinite reverse}
+@keyframes pedalLeg{0%{transform:rotate(-40deg)}50%{transform:rotate(40deg)}100%{transform:rotate(-40deg)}}
+
+.foot{position:absolute;bottom:-6px;left:-4px;width:14px;height:8px;background:#FFB347;border-radius:4px;border:1px solid #333}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="sun"></div>
+  <div class="clouds">
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+  </div>
+  <div class="bike-group">
+    <div class="pelican">
+      <div class="head">
+        <div class="beak">
+          <div class="beak-tip"></div>
+          <div class="beak-bottom"></div>
+        </div>
+        <div class="eye"></div>
+      </div>
+      <div class="neck"></div>
+      <div class="body">
+        <div class="belly"></div>
+        <div class="wing"></div>
+        <div class="pouch"></div>
+      </div>
+      <div class="leg-l"><div class="foot"></div></div>
+      <div class="leg-r"><div class="foot"></div></div>
+    </div>
+    <div class="bicycle">
+      <div class="frame">
+        <div class="tube1"></div>
+        <div class="tube2"></div>
+        <div class="tube3"></div>
+        <div class="tube4"></div>
+        <div class="handlebar"></div>
+        <div class="seat"></div>
+        <div class="seat-post"></div>
+      </div>
+      <div class="wheel wheel-b">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      <div class="wheel wheel-f">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      <div class="pedal-area">
+        <div class="pedal"></div>
+        <div class="pedal"></div>
+      </div>
+      <div class="chain"></div>
+    </div>
+  </div>
+  <div class="ground"></div>
+</div>
+</body>
+</html>

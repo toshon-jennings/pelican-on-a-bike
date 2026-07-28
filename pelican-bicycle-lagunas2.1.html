@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Pelican Riding a Bicycle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #87ceeb 0%, #98fb98 100%);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+  }
+  .scene {
+    position: relative;
+    width: 800px;
+    height: 400px;
+  }
+  .ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #228b22;
+    border-top: 4px solid #8b4513;
+  }
+  .road {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: #333;
+  }
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: drift linear infinite;
+  }
+  .cloud::before,
+  .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud1 { width: 80px; height: 30px; top: 50px; left: 50px; animation-duration: 25s; }
+  .cloud2 { width: 120px; height: 40px; top: 100px; left: 400px; animation-duration: 35s; }
+  .cloud3 { width: 60px; height: 25px; top: 60px; left: 650px; animation-duration: 30s; }
+  .cloud1::before { width: 50px; height: 40px; top: -15px; left: 10px; }
+  .cloud1::after { width: 40px; height: 35px; top: -10px; left: 45px; }
+  .cloud2::before { width: 70px; height: 50px; top: -20px; left: 20px; }
+  .cloud2::after { width: 60px; height: 45px; top: -15px; left: 70px; }
+  .cloud3::before { width: 40px; height: 30px; top: -12px; left: 8px; }
+  .cloud3::after { width: 35px; height: 28px; top: -8px; left: 35px; }
+  .sun {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #ffd700, #ff8c00);
+    border-radius: 50%;
+    top: 60px;
+    left: 680px;
+    box-shadow: 0 0 40px #ffd700;
+  }
+  .bicycle {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: ride 4s linear infinite;
+  }
+  .wheel {
+    position: absolute;
+    border: 6px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  .wheel.rear { width: 100px; height: 100px; left: 0; bottom: 0; }
+  .wheel.front { width: 100px; height: 100px; right: 0; bottom: 0; }
+  .wheel.rear::before,
+  .wheel.front::before {
+    content: '';
+    position: absolute;
+    background: #333;
+    border-radius: 2px;
+  }
+  .wheel.rear::before {
+    width: 90px; height: 4px; top: 48px; left: 5px;
+    transform-origin: center;
+    animation: spin 1s linear infinite;
+  }
+  .wheel.front::before {
+    width: 90px; height: 4px; top: 48px; left: 5px;
+    transform-origin: center;
+    animation: spin 1s linear infinite;
+  }
+  .frame {
+    position: absolute;
+    bottom: 30px;
+  }
+  .frame-tube {
+    position: absolute;
+    background: #444;
+    transform-origin: bottom left;
+  }
+  .frame.toptube { width: 110px; height: 6px; bottom: 80px; left: 0; transform: rotate(-15deg); }
+  .frame.downtube { width: 110px; height: 6px; bottom: 30px; left: 0; transform: rotate(20deg); }
+  .frame.seatstay { width: 90px; height: 6px; bottom: 60px; left: 0; transform: rotate(30deg); }
+  .frame.chainstay { width: 90px; height: 6px; bottom: 30px; left: 0; transform: rotate(-10deg); }
+  .frame.seatpost { width: 6px; height: 30px; bottom: 60px; left: 10px; }
+  .seat {
+    position: absolute;
+    width: 30px;
+    height: 10px;
+    background: #8b4513;
+    border-radius: 5px;
+    bottom: 90px;
+    left: 5px;
+  }
+  .handlebars {
+    position: absolute;
+    width: 30px;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+    top: 70px;
+    right: -40px;
+    transform: rotate(-15deg);
+  }
+  .handlebars::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 20px;
+    background: #333;
+    top: -18px;
+    left: 8px;
+    border-radius: 3px;
+  }
+  .pedal {
+    position: absolute;
+    width: 20px;
+    height: 6px;
+    background: #555;
+    border-radius: 3px;
+    bottom: 30px;
+    left: 40px;
+    transform-origin: center;
+    animation: pedal 1s linear infinite;
+  }
+  .pedal.right { left: 40px; animation-delay: 0s; }
+  .pelican {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+  .body {
+    position: relative;
+    width: 80px;
+    height: 50px;
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    margin: 0 auto;
+    animation: bob 0.5s ease-in-out infinite alternate;
+  }
+  .neck {
+    position: absolute;
+    width: 12px;
+    height: 50px;
+    background: #fff;
+    border-radius: 6px;
+    top: -45px;
+    left: 50%;
+    transform-origin: bottom center;
+    animation: neck 0.5s ease-in-out infinite alternate;
+  }
+  .head {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    background: #fff;
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: head 0.5s ease-in-out infinite alternate;
+  }
+  .beak {
+    position: absolute;
+    width: 30px;
+    height: 12px;
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    border-radius: 0 0 15px 0;
+    top: 12px;
+    left: 25px;
+    transform: rotate(15deg);
+  }
+  .eye {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #000;
+    border-radius: 50%;
+    top: 10px;
+    left: 10px;
+  }
+  .wing {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(135deg, #e0e0e0, #b0b0b0);
+    border-radius: 50%;
+    bottom: 5px;
+    left: 10px;
+    animation: flap 0.8s ease-in-out infinite;
+  }
+  .leg {
+    position: absolute;
+    width: 8px;
+    height: 25px;
+    background: #ffa500;
+    bottom: -25px;
+    left: 25px;
+    z-index: -1;
+  }
+  .leg.left { left: 15px; }
+  .leg.right { left: 35px; }
+  .leg::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 4px;
+    background: #ffa500;
+    bottom: -4px;
+    left: -2px;
+    border-radius: 2px;
+  }
+  .leg.left::before { transform: rotate(-20deg); }
+  .leg.right::before { transform: rotate(20deg); }
+  .title {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    z-index: 20;
+  }
+  @keyframes ride {
+    0% { transform: translateX(-50%) rotate(0deg); }
+    100% { transform: translateX(calc(-50% - 200px)) rotate(0deg); }
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes pedal {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes bob {
+    0% { top: 0; }
+    100% { top: -3px; }
+  }
+  @keyframes neck {
+    0% { transform: rotate(5deg); }
+    100% { transform: rotate(-5deg); }
+  }
+  @keyframes head {
+    0% { top: -80px; }
+    100% { top: -82px; }
+  }
+  @keyframes flap {
+    0%, 100% { transform: rotate(0); }
+    50% { transform: rotate(-20deg); }
+  }
+  @keyframes drift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-1000px); }
+  }
+  @media (max-width: 600px) {
+    .scene { width: 100%; height: 300px; }
+    .title { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="title">Pelican on a Bicycle</div>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="ground"></div>
+    <div class="road"></div>
+
+    <div class="bicycle">
+      <div class="wheel rear">
+        <div class="wheel rear"></div>
+      </div>
+      <div class="wheel front">
+        <div class="wheel front"></div>
+      </div>
+      <div class="frame">
+        <div class="frame-tube toptube"></div>
+        <div class="frame-tube downtube"></div>
+        <div class="frame-tube seatstay"></div>
+        <div class="frame-tube chainstay"></div>
+        <div class="frame-tube seatpost"></div>
+        <div class="seat"></div>
+        <div class="handlebars"></div>
+        <div class="pedal right"></div>
+        <div class="pedal right" style="left: 40px; transform: rotate(180deg);"></div>
+      </div>
+    </div>
+
+    <div class="pelican">
+      <div class="body">
+        <div class="wing"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+      </div>
+      <div class="neck"></div>
+      <div class="head">
+        <div class="beak"></div>
+        <div class="eye"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pelican = document.querySelector('.pelican');
+    const bicycle = document.querySelector('.bicycle');
+    let pos = 0;
+    let direction = 1;
+    let speed = 0.5;
+
+    function animate() {
+      pos += speed * direction;
+      if (pos > 350 || pos < -350) {
+        direction *= -1;
+      }
+      bicycle.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+      pelican.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

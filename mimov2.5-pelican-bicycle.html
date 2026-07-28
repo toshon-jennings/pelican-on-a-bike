@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pelican Riding a Bicycle</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 60%, #3a7d44 60%, #2d6a34 100%);
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+  .scene {
+    position: relative;
+    width: 600px;
+    height: 400px;
+  }
+  .bike-wrapper {
+    position: absolute;
+    bottom: 80px;
+    animation: rideBike 8s linear infinite;
+  }
+  @keyframes rideBike {
+    0% { transform: translateX(-300px); }
+    100% { transform: translateX(600px); }
+  }
+  /* Wheels */
+  .wheel {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 4px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  .wheel-front { bottom: 0; left: 180px; }
+  .wheel-back { bottom: 0; left: 20px; }
+  .wheel::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px; height: 4px;
+    background: #333;
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+  }
+  /* Spokes */
+  .spoke {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 24px; height: 2px;
+    background: #333;
+    transform-origin: 0 50%;
+    animation: spin 1s linear infinite;
+  }
+  .wheel-front .spoke:nth-child(1) { transform: rotate(0deg); }
+  .wheel-front .spoke:nth-child(2) { transform: rotate(45deg); }
+  .wheel-front .spoke:nth-child(3) { transform: rotate(90deg); }
+  .wheel-front .spoke:nth-child(4) { transform: rotate(135deg); }
+  .wheel-back .spoke:nth-child(1) { transform: rotate(0deg); }
+  .wheel-back .spoke:nth-child(2) { transform: rotate(45deg); }
+  .wheel-back .spoke:nth-child(3) { transform: rotate(90deg); }
+  .wheel-back .spoke:nth-child(4) { transform: rotate(135deg); }
+  @keyframes spin { from { } to { } }
+  /* Frame */
+  .frame {
+    position: absolute;
+    bottom: 28px;
+    left: 42px;
+    width: 160px;
+    height: 60px;
+  }
+  .frame-seg {
+    position: absolute;
+    height: 3px;
+    background: #333;
+    transform-origin: 0 50%;
+  }
+  .seg1 { bottom: 10px; left: 0; width: 80px; transform: rotate(-30deg); }
+  .seg2 { bottom: 30px; left: 0; width: 100px; transform: rotate(15deg); }
+  .seg3 { bottom: 10px; left: 80px; width: 80px; transform: rotate(-55deg); }
+  .seg4 { bottom: 40px; left: 100px; width: 60px; transform: rotate(-35deg); }
+  /* Seat */
+  .seat {
+    position: absolute;
+    bottom: 56px;
+    left: 85px;
+    width: 20px; height: 4px;
+    background: #333;
+    border-radius: 2px;
+  }
+  /* Handlebars */
+  .handlebar {
+    position: absolute;
+    bottom: 52px;
+    left: 170px;
+    width: 3px;
+    height: 30px;
+    background: #333;
+  }
+  .handlebar-top {
+    position: absolute;
+    bottom: 78px;
+    left: 162px;
+    width: 20px;
+    height: 3px;
+    background: #333;
+    border-radius: 2px;
+  }
+  /* Pedals */
+  .pedal-arm {
+    position: absolute;
+    bottom: 8px;
+    left: 60px;
+    width: 30px;
+    height: 3px;
+    background: #666;
+    transform-origin: 0 50%;
+    animation: pedalSpin 1s linear infinite;
+  }
+  .pedal {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 12px;
+    height: 3px;
+    background: #555;
+  }
+  @keyframes pedalSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  /* Pelican Body */
+  .pelican {
+    position: absolute;
+    bottom: 58px;
+    left: 70px;
+  }
+  .pelican-body {
+    width: 60px;
+    height: 40px;
+    background: #f5f5dc;
+    border-radius: 50% 45% 40% 50%;
+    position: relative;
+    animation: bodyBob 1s ease-in-out infinite;
+  }
+  @keyframes bodyBob {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-4px) rotate(-8deg); }
+  }
+  /* Wings */
+  .wing {
+    position: absolute;
+    top: -5px;
+    left: 5px;
+    width: 35px;
+    height: 30px;
+    background: #d3d3c3;
+    border-radius: 0 60% 40% 0;
+    transform-origin: 10px 20px;
+    animation: wingFlap 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes wingFlap {
+    0% { transform: rotate(-10deg); }
+    100% { transform: rotate(10deg); }
+  }
+  .wing-back {
+    background: #c8c8b0;
+    z-index: -1;
+    left: 8px;
+    animation-delay: 0.3s;
+  }
+  /* Head */
+  .pelican-head {
+    position: absolute;
+    top: -25px;
+    left: -15px;
+    width: 30px;
+    height: 28px;
+    background: #f5f5dc;
+    border-radius: 50%;
+    animation: headBob 1s ease-in-out infinite;
+  }
+  @keyframes headBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(2px); }
+  }
+  /* Eye */
+  .eye {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 6px;
+    height: 6px;
+    background: #222;
+    border-radius: 50%;
+  }
+  .eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+  }
+  /* Beak */
+  .beak {
+    position: absolute;
+    top: 14px;
+    left: -22px;
+    width: 25px;
+    height: 8px;
+    background: #f4a460;
+    border-radius: 2px 0 8px 2px;
+    transform-origin: right center;
+    animation: beakOpen 2s ease-in-out infinite;
+  }
+  @keyframes beakOpen {
+    0%, 80%, 100% { transform: rotate(0deg); }
+    85% { transform: rotate(-8deg); }
+    90% { transform: rotate(0deg); }
+    95% { transform: rotate(-8deg); }
+  }
+  /* Beak pouch */
+  .beak-pouch {
+    position: absolute;
+    top: 18px;
+    left: -18px;
+    width: 18px;
+    height: 12px;
+    background: #e8945a;
+    border-radius: 0 0 50% 30%;
+    animation: beakOpen 2s ease-in-out infinite;
+  }
+  /* Neck */
+  .neck {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    width: 12px;
+    height: 20px;
+    background: #f5f5dc;
+    border-radius: 50%;
+    transform: rotate(15deg);
+  }
+  /* Tail feathers */
+  .tail {
+    position: absolute;
+    top: 5px;
+    right: -15px;
+    width: 20px;
+    height: 15px;
+    background: #c8c8b0;
+    border-radius: 0 80% 0 20%;
+    transform: rotate(-20deg);
+  }
+  /* Legs */
+  .leg {
+    position: absolute;
+    bottom: -15px;
+    width: 3px;
+    height: 18px;
+    background: #f4a460;
+  }
+  .leg-left { left: 18px; animation: legPedal1 1s linear infinite; }
+  .leg-right { left: 32px; animation: legPedal2 1s linear infinite; }
+  @keyframes legPedal1 {
+    0% { transform: rotate(-15deg); }
+    25% { transform: rotate(15deg); }
+    50% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+    100% { transform: rotate(-15deg); }
+  }
+  @keyframes legPedal2 {
+    0% { transform: rotate(15deg); }
+    25% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+    100% { transform: rotate(15deg); }
+  }
+  /* Feet */
+  .foot {
+    position: absolute;
+    bottom: -3px;
+    left: -4px;
+    width: 10px;
+    height: 3px;
+    background: #f4a460;
+    border-radius: 2px;
+  }
+  /* Ground lines */
+  .ground-lines {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    height: 10px;
+  }
+  .ground-line {
+    position: absolute;
+    width: 40px;
+    height: 2px;
+    background: rgba(0,0,0,0.15);
+    animation: scrollGround 0.8s linear infinite;
+  }
+  .ground-line:nth-child(1) { left: 50px; animation-delay: 0s; }
+  .ground-line:nth-child(2) { left: 150px; animation-delay: 0.2s; }
+  .ground-line:nth-child(3) { left: 250px; animation-delay: 0.4s; }
+  .ground-line:nth-child(4) { left: 350px; animation-delay: 0.6s; }
+  .ground-line:nth-child(5) { left: 450px; animation-delay: 0.1s; }
+  @keyframes scrollGround {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(-600px); opacity: 0; }
+  }
+  /* Clouds */
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.8;
+    animation: cloudDrift 20s linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud1 { top: 30px; left: 500px; width: 60px; height: 20px; animation-duration: 25s; }
+  .cloud1::before { width: 30px; height: 30px; top: -15px; left: 10px; }
+  .cloud1::after { width: 25px; height: 25px; top: -10px; left: 30px; }
+  .cloud2 { top: 60px; left: 300px; width: 50px; height: 16px; animation-duration: 30s; animation-delay: -10s; }
+  .cloud2::before { width: 25px; height: 25px; top: -12px; left: 8px; }
+  .cloud2::after { width: 20px; height: 20px; top: -8px; left: 25px; }
+  .cloud3 { top: 20px; left: 100px; width: 45px; height: 14px; animation-duration: 22s; animation-delay: -5s; }
+  .cloud3::before { width: 22px; height: 22px; top: -10px; left: 8px; }
+  .cloud3::after { width: 18px; height: 18px; top: -7px; left: 22px; }
+  @keyframes cloudDrift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-700px); }
+  }
+  /* Sun */
+  .sun {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    width: 50px;
+    height: 50px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 30px #FFD700, 0 0 60px rgba(255,215,0,0.3);
+  }
+  /* Title */
+  .title {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="title">Pelican on a Bicycle</div>
+  <div class="sun"></div>
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="cloud cloud3"></div>
+
+  <div class="bike-wrapper">
+    <!-- Wheels -->
+    <div class="wheel wheel-back">
+      <div class="spoke"></div><div class="spoke"></div><div class="spoke"></div><div class="spoke"></div>
+    </div>
+    <div class="wheel wheel-front">
+      <div class="spoke"></div><div class="spoke"></div><div class="spoke"></div><div class="spoke"></div>
+    </div>
+    <!-- Frame -->
+    <div class="frame">
+      <div class="frame-seg seg1"></div>
+      <div class="frame-seg seg2"></div>
+      <div class="frame-seg seg3"></div>
+      <div class="frame-seg seg4"></div>
+    </div>
+    <div class="seat"></div>
+    <div class="handlebar"></div>
+    <div class="handlebar-top"></div>
+    <!-- Pedals -->
+    <div class="pedal-arm"><div class="pedal"></div></div>
+    <!-- Pelican -->
+    <div class="pelican">
+      <div class="pelican-body">
+        <div class="wing"></div>
+        <div class="wing wing-back"></div>
+        <div class="tail"></div>
+        <div class="neck"></div>
+        <div class="pelican-head">
+          <div class="eye"></div>
+          <div class="beak"></div>
+          <div class="beak-pouch"></div>
+        </div>
+        <div class="leg leg-left"><div class="foot"></div></div>
+        <div class="leg leg-right"><div class="foot"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ground-lines">
+    <div class="ground-line"></div>
+    <div class="ground-line"></div>
+    <div class="ground-line"></div>
+    <div class="ground-line"></div>
+    <div class="ground-line"></div>
+  </div>
+</div>
+</body>
+</html>
