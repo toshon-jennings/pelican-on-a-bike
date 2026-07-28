@@ -4,7 +4,9 @@ A collection of CSS animation tests: each file is a different AI model's attempt
 
 ## View the gallery
 
-Open [index.html](index.html) locally, or visit the GitHub Pages site once published.
+**Live site:** https://toshon-jennings.github.io/pelican-on-a-bike/
+
+Open [index.html](index.html) locally, or use the link above. (The GitHub repo URL is not the website — you need the `github.io` link with `/pelican-on-a-bike/` at the end.)
 
 ## Adding a new test
 
