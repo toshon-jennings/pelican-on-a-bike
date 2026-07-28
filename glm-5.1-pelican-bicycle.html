@@ -1,0 +1,393 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelican Riding a Bicycle</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(180deg, #87CEEB 0%, #B0E0FF 40%, #90C965 40%, #5A9E2F 100%);
+        }
+        .scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud1 {
+            width: 120px; height: 50px;
+            top: 8%; left: -150px;
+            animation: cloudMove 25s linear infinite;
+        }
+        .cloud1::before { width: 70px; height: 70px; top: -35px; left: 15px; }
+        .cloud1::after { width: 90px; height: 60px; top: -25px; left: 50px; }
+        .cloud2 {
+            width: 100px; height: 40px;
+            top: 15%; left: -120px;
+            animation: cloudMove 30s linear infinite 5s;
+        }
+        .cloud2::before { width: 60px; height: 55px; top: -30px; left: 10px; }
+        .cloud2::after { width: 75px; height: 50px; top: -20px; left: 40px; }
+        .cloud3 {
+            width: 140px; height: 55px;
+            top: 5%; left: -170px;
+            animation: cloudMove 35s linear infinite 12s;
+        }
+        .cloud3::before { width: 80px; height: 75px; top: -40px; left: 20px; }
+        .cloud3::after { width: 100px; height: 65px; top: -30px; left: 60px; }
+        @keyframes cloudMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(100vw + 300px)); }
+        }
+        .ground-line {
+            position: absolute;
+            bottom: 28%;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #4A7A20;
+        }
+        .road {
+            position: absolute;
+            bottom: 22%;
+            left: 0;
+            width: 100%;
+            height: 8%;
+            background: #555;
+            border-top: 3px solid #777;
+            border-bottom: 3px solid #444;
+        }
+        .road-markings {
+            position: absolute;
+            top: 45%;
+            left: 0;
+            width: 200%;
+            height: 4px;
+            background: repeating-linear-gradient(90deg, #FFD700 0px, #FFD700 40px, transparent 40px, transparent 80px);
+            animation: roadScroll 1s linear infinite;
+        }
+        @keyframes roadScroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .grass {
+            position: absolute;
+            bottom: 30%;
+            left: 0;
+            width: 100%;
+            height: 4%;
+            background: #6DB83A;
+        }
+        .bike-pelican {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .wheel {
+            animation: wheelSpin 0.8s linear infinite;
+            transform-origin: center;
+        }
+        @keyframes wheelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pedal-group {
+            animation: pedalSpin 0.8s linear infinite;
+            transform-origin: center;
+        }
+        @keyframes pedalSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pelican-body {
+            animation: pelicanBob 0.4s ease-in-out infinite alternate;
+        }
+        @keyframes pelicanBob {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-3px); }
+        }
+        .leg-left {
+            animation: legPedalLeft 0.8s ease-in-out infinite;
+            transform-origin: 245px 200px;
+        }
+        .leg-right {
+            animation: legPedalRight 0.8s ease-in-out infinite;
+            transform-origin: 245px 200px;
+        }
+        @keyframes legPedalLeft {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-20deg); }
+            100% { transform: rotate(0deg); }
+        }
+        @keyframes legPedalRight {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(20deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .wing {
+            animation: wingFlap 0.6s ease-in-out infinite alternate;
+            transform-origin: 220px 140px;
+        }
+        @keyframes wingFlap {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-15deg); }
+        }
+        .pouch {
+            animation: pouchWobble 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes pouchWobble {
+            0% { transform: scaleY(1); }
+            100% { transform: scaleY(1.08); }
+        }
+        .eye-lid {
+            animation: blink 3s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(0); }
+            95% { transform: scaleY(1); }
+        }
+        .sun {
+            position: absolute;
+            top: 5%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #FFD700, 0 0 80px rgba(255, 215, 0, 0.4);
+            animation: sunPulse 3s ease-in-out infinite alternate;
+        }
+        @keyframes sunPulse {
+            0% { box-shadow: 0 0 40px #FFD700, 0 0 80px rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 60px #FFD700, 0 0 100px rgba(255, 215, 0, 0.5); }
+        }
+        .flower {
+            position: absolute;
+            bottom: 31%;
+        }
+        .flower-stem {
+            width: 3px;
+            height: 25px;
+            background: #3A7D1E;
+            margin: 0 auto;
+        }
+        .flower-head {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: flowerSway 2s ease-in-out infinite alternate;
+        }
+        @keyframes flowerSway {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+        .title {
+            position: absolute;
+            top: 3%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Georgia', serif;
+            font-size: 2rem;
+            color: #2C5F1A;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            animation: titleFloat 3s ease-in-out infinite alternate;
+        }
+        @keyframes titleFloat {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-5px); }
+        }
+        .speed-lines {
+            position: absolute;
+            left: -60px;
+            animation: speedDash 0.5s linear infinite;
+        }
+        @keyframes speedDash {
+            0% { opacity: 0.6; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(-30px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="sun"></div>
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="title">🚲 Pelican on a Bicycle 🚲</div>
+        <div class="road">
+            <div class="road-markings"></div>
+        </div>
+        <div class="grass"></div>
+        <div class="flower" style="left: 10%;">
+            <div class="flower-head" style="background: #FF6B6B;"></div>
+            <div class="flower-stem"></div>
+        </div>
+        <div class="flower" style="left: 25%;">
+            <div class="flower-head" style="background: #FFD93D;"></div>
+            <div class="flower-stem"></div>
+        </div>
+        <div class="flower" style="left: 70%;">
+            <div class="flower-head" style="background: #FF8FAB;"></div>
+            <div class="flower-stem"></div>
+        </div>
+        <div class="flower" style="left: 85%;">
+            <div class="flower-head" style="background: #C084FC;"></div>
+            <div class="flower-stem"></div>
+        </div>
+        <div class="flower" style="left: 55%;">
+            <div class="flower-head" style="background: #67E8F9;"></div>
+            <div class="flower-stem"></div>
+        </div>
+        <div class="bike-pelican">
+            <svg width="400" height="320" viewBox="0 0 400 320">
+                <g class="speed-lines">
+                    <line x1="50" y1="170" x2="20" y2="170" stroke="#999" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="55" y1="185" x2="15" y2="185" stroke="#999" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="50" y1="200" x2="25" y2="200" stroke="#999" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="55" y1="155" x2="30" y2="155" stroke="#999" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+                <g style="animation: wheelSpin 0.8s linear infinite; transform-origin: 120px 230px;">
+                    <circle cx="120" cy="230" r="45" fill="none" stroke="#333" stroke-width="6"/>
+                    <circle cx="120" cy="230" r="42" fill="none" stroke="#555" stroke-width="2"/>
+                    <line x1="120" y1="188" x2="120" y2="272" stroke="#888" stroke-width="1.5"/>
+                    <line x1="78" y1="230" x2="162" y2="230" stroke="#888" stroke-width="1.5"/>
+                    <line x1="89" y1="199" x2="151" y2="261" stroke="#888" stroke-width="1.5"/>
+                    <line x1="151" y1="199" x2="89" y2="261" stroke="#888" stroke-width="1.5"/>
+                    <circle cx="120" cy="230" r="5" fill="#666"/>
+                </g>
+                <g style="animation: wheelSpin 0.8s linear infinite; transform-origin: 310px 230px;">
+                    <circle cx="310" cy="230" r="45" fill="none" stroke="#333" stroke-width="6"/>
+                    <circle cx="310" cy="230" r="42" fill="none" stroke="#555" stroke-width="2"/>
+                    <line x1="310" y1="188" x2="310" y2="272" stroke="#888" stroke-width="1.5"/>
+                    <line x1="268" y1="230" x2="352" y2="230" stroke="#888" stroke-width="1.5"/>
+                    <line x1="279" y1="199" x2="341" y2="261" stroke="#888" stroke-width="1.5"/>
+                    <line x1="341" y1="199" x2="279" y2="261" stroke="#888" stroke-width="1.5"/>
+                    <circle cx="310" cy="230" r="5" fill="#666"/>
+                </g>
+                <line x1="200" y1="145" x2="180" y2="230" stroke="#E74C3C" stroke-width="5" stroke-linecap="round"/>
+                <line x1="200" y1="145" x2="240" y2="230" stroke="#E74C3C" stroke-width="5" stroke-linecap="round"/>
+                <line x1="200" y1="145" x2="280" y2="150" stroke="#E74C3C" stroke-width="5" stroke-linecap="round"/>
+                <line x1="120" y1="230" x2="240" y2="230" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+                <line x1="120" y1="230" x2="200" y2="145" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+                <line x1="280" y1="150" x2="310" y2="230" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+                <line x1="275" y1="145" x2="295" y2="140" stroke="#444" stroke-width="4" stroke-linecap="round"/>
+                <line x1="295" y1="130" x2="295" y2="150" stroke="#444" stroke-width="5" stroke-linecap="round"/>
+                <line x1="290" y1="130" x2="300" y2="130" stroke="#222" stroke-width="6" stroke-linecap="round"/>
+                <line x1="290" y1="150" x2="300" y2="150" stroke="#222" stroke-width="6" stroke-linecap="round"/>
+                <ellipse cx="195" cy="140" rx="18" ry="6" fill="#333"/>
+                <ellipse cx="195" cy="139" rx="16" ry="5" fill="#444"/>
+                <circle cx="240" cy="230" r="12" fill="none" stroke="#888" stroke-width="2"/>
+                <circle cx="240" cy="230" r="4" fill="#666"/>
+                <g style="animation: pedalSpin 0.8s linear infinite; transform-origin: 240px 230px;">
+                    <line x1="240" y1="230" x2="240" y2="252" stroke="#666" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="240" y1="230" x2="240" y2="208" stroke="#666" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="232" y="250" width="16" height="5" rx="2" fill="#555"/>
+                    <rect x="232" y="205" width="16" height="5" rx="2" fill="#555"/>
+                </g>
+                <path d="M 240 242 Q 180 255, 120 235" fill="none" stroke="#777" stroke-width="2" stroke-dasharray="3,2"/>
+                <g class="pelican-body">
+                    <path d="M 140 155 L 110 145 L 120 160 L 105 158 L 118 168 L 130 165" fill="#F5F0E0" stroke="#D4CFC0" stroke-width="1"/>
+                    <ellipse cx="200" cy="155" rx="55" ry="30" fill="#FAFAF0" stroke="#E0DFD0" stroke-width="1.5"/>
+                    <ellipse cx="200" cy="162" rx="48" ry="18" fill="#F0EFE0" opacity="0.5"/>
+                    <g class="wing">
+                        <path d="M 180 140 Q 200 120, 240 130 Q 230 140, 220 148 Q 200 155, 180 150 Z" fill="#E8E8D8" stroke="#D0D0C0" stroke-width="1"/>
+                        <path d="M 195 138 Q 210 128, 235 132" fill="none" stroke="#C8C8B8" stroke-width="1"/>
+                        <path d="M 190 143 Q 210 133, 233 136" fill="none" stroke="#C8C8B8" stroke-width="1"/>
+                    </g>
+                    <path d="M 225 145 Q 240 130, 250 110 Q 255 95, 260 85" fill="#FAFAF0" stroke="#E0DFD0" stroke-width="1.5"/>
+                    <path d="M 235 148 Q 250 130, 258 110 Q 262 95, 265 85" fill="#FAFAF0" stroke="#E0DFD0" stroke-width="1.5"/>
+                    <path d="M 225 145 Q 240 130, 250 110 Q 255 95, 260 85 L 265 85 Q 262 95, 258 110 Q 250 130, 235 148 Z" fill="#FAFAF0"/>
+                    <ellipse cx="268" cy="78" rx="20" ry="18" fill="#FAFAF0" stroke="#E0DFD0" stroke-width="1.5"/>
+                    <circle cx="275" cy="73" r="5" fill="white" stroke="#333" stroke-width="1"/>
+                    <circle cx="276" cy="72" r="2.5" fill="#222"/>
+                    <circle cx="277" cy="71" r="1" fill="white"/>
+                    <ellipse cx="275" cy="73" rx="5.5" ry="5.5" fill="#FAFAF0" class="eye-lid" style="transform-origin: 275px 73px;"/>
+                    <path d="M 285 75 L 330 80 L 285 85 Z" fill="#F4A460" stroke="#D4884A" stroke-width="1"/>
+                    <line x1="285" y1="80" x2="328" y2="80" stroke="#D4884A" stroke-width="1"/>
+                    <g class="pouch" style="transform-origin: 300px 85px;">
+                        <path d="M 285 85 Q 300 115, 310 108 Q 320 100, 330 80" fill="#F4A460" stroke="#D4884A" stroke-width="1" opacity="0.85"/>
+                        <path d="M 290 88 Q 302 108, 308 103 Q 316 96, 325 82" fill="#E8945A" opacity="0.4"/>
+                    </g>
+                    <path d="M 255 65 Q 258 50, 262 55 Q 260 48, 265 52 Q 263 45, 268 55" fill="#E8E8D8" stroke="#D0D0C0" stroke-width="0.5"/>
+                    <g class="leg-left">
+                        <path d="M 210 175 Q 220 200, 235 215" stroke="#F4A460" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        <path d="M 233 213 L 240 218 L 235 220" fill="#F4A460" stroke="#D4884A" stroke-width="1"/>
+                    </g>
+                    <g class="leg-right">
+                        <path d="M 215 175 Q 230 195, 242 210" stroke="#E8945A" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        <path d="M 240 208 L 248 213 L 243 215" fill="#E8945A" stroke="#D4884A" stroke-width="1"/>
+                    </g>
+                    <path d="M 225 145 Q 260 142, 280 140 Q 290 138, 295 135" fill="none" stroke="#D8D8C8" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="295" cy="135" r="4" fill="#E8E8D8" stroke="#D0D0C0" stroke-width="1"/>
+                </g>
+                <ellipse cx="215" cy="280" rx="100" ry="8" fill="rgba(0,0,0,0.1)"/>
+            </svg>
+        </div>
+        <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+            <g style="animation: cloudMove 15s linear infinite;">
+                <path d="M -50 100 Q -45 95, -40 100 Q -35 95, -30 100" fill="none" stroke="#555" stroke-width="1.5"/>
+            </g>
+            <g style="animation: cloudMove 18s linear infinite 3s;">
+                <path d="M -50 80 Q -46 76, -42 80 Q -38 76, -34 80" fill="none" stroke="#555" stroke-width="1.5"/>
+            </g>
+            <g style="animation: cloudMove 20s linear infinite 8s;">
+                <path d="M -50 120 Q -47 117, -44 120 Q -41 117, -38 120" fill="none" stroke="#555" stroke-width="1"/>
+            </g>
+        </svg>
+    </div>
+    <script>
+        const scene = document.querySelector('.scene');
+        function createParticle() {
+            const particle = document.createElement('div');
+            const size = Math.random() * 4 + 2;
+            particle.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(255,255,255,${Math.random() * 0.4 + 0.2});
+                border-radius: 50%;
+                top: ${Math.random() * 40}%;
+                left: -10px;
+                pointer-events: none;
+                animation: particleFloat ${Math.random() * 8 + 5}s linear forwards;
+            `;
+            scene.appendChild(particle);
+            setTimeout(() => particle.remove(), 13000);
+        }
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFloat {
+                0% { transform: translate(0, 0); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translate(${window.innerWidth + 50}px, ${Math.random() > 0.5 ? '-' : ''}${Math.random() * 50}px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        setInterval(createParticle, 600);
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 5;
+            const bikePelican = document.querySelector('.bike-pelican');
+            bikePelican.style.transform = `translateX(calc(-50% + ${x}px)) translateY(${y}px)`;
+        });
+    </script>
+</body>
+</html>

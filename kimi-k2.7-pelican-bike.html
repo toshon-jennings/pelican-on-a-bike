@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelican on a Bicycle</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            --speed: 4s;
+            --wheel-speed: var(--speed);
+            --pedal-speed: var(--speed);
+            --road-speed: var(--speed);
+            --bob-speed: 1.5s;
+            --cloud-speed: 20s;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 60%, #90EE90 60%, #7CFC00 100%);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pedal-rotate {
+            from { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+        }
+        @keyframes road-move {
+            from { transform: translateX(0); }
+            to { transform: translateX(-200px); }
+        }
+        @keyframes cloud-move {
+            from { transform: translateX(-150px); }
+            to { transform: translateX(1200px); }
+        }
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        @keyframes flap {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+        @keyframes honk-beak {
+            0% { transform: rotate(0deg); }
+            30% { transform: rotate(-25deg); }
+            60% { transform: rotate(-25deg); }
+            100% { transform: rotate(0deg); }
+        }
+        @keyframes bubble-pop {
+            0% { opacity: 0; transform: scale(0.5) translateY(10px); }
+            20% { opacity: 1; transform: scale(1.1) translateY(0); }
+            80% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-10px); }
+        }
+        .wheel {
+            animation: spin var(--wheel-speed) linear infinite;
+            transform-origin: center;
+        }
+        .pedal {
+            animation: pedal-rotate var(--pedal-speed) linear infinite;
+            transform-origin: 400px 410px;
+        }
+        .road-lines {
+            animation: road-move var(--road-speed) linear infinite;
+        }
+        .cloud {
+            animation: cloud-move var(--cloud-speed) linear infinite;
+        }
+        .pelican-body-group {
+            animation: bob var(--bob-speed) ease-in-out infinite;
+            transform-origin: 400px 350px;
+        }
+        .wing {
+            animation: flap 2s ease-in-out infinite;
+            transform-origin: 380px 300px;
+        }
+        .beak-lower {
+            transform-origin: 485px 235px;
+        }
+        .honking .beak-lower {
+            animation: honk-beak 0.6s ease-in-out;
+        }
+        .honking .speech-bubble {
+            animation: bubble-pop 1.5s ease-in-out forwards;
+        }
+        .control-panel {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        input[type=range] {
+            accent-color: #F97316;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center relative font-sans">
+    <div class="absolute top-6 left-0 right-0 text-center z-10">
+        <h1 class="text-4xl md:text-6xl font-black text-white drop-shadow-lg tracking-wide">
+            Pelican <span class="text-yellow-300">Pedaler</span>
+        </h1>
+        <p class="text-white/90 text-lg mt-2 font-medium drop-shadow-md">The happiest bird on two wheels</p>
+    </div>
+    <div class="w-full max-w-5xl aspect-video relative">
+        <svg viewBox="0 0 800 500" class="w-full h-full drop-shadow-2xl" id="scene">
+            <g class="cloud" style="animation-duration: 35s;">
+                <path d="M50,80 Q70,60 90,80 Q110,60 130,80 Q150,80 150,100 Q150,120 130,120 L50,120 Q30,120 30,100 Q30,80 50,80 Z" fill="white" opacity="0.8"/>
+            </g>
+            <g class="cloud" style="animation-duration: 45s; animation-delay: -10s;">
+                <path d="M300,50 Q320,30 340,50 Q360,30 380,50 Q400,50 400,70 Q400,90 380,90 L300,90 Q280,90 280,70 Q280,50 300,50 Z" fill="white" opacity="0.7"/>
+            </g>
+            <g class="cloud" style="animation-duration: 55s; animation-delay: -25s;">
+                <path d="M600,90 Q620,70 640,90 Q660,70 680,90 Q700,90 700,110 Q700,130 680,130 L600,130 Q580,130 580,110 Q580,90 600,90 Z" fill="white" opacity="0.85"/>
+            </g>
+            <path d="M0,300 Q200,250 400,300 T800,280 V500 H0 Z" fill="#4ADE80" opacity="0.6"/>
+            <path d="M0,320 Q300,280 500,320 T800,300 V500 H0 Z" fill="#22C55E" opacity="0.5"/>
+            <rect x="0" y="420" width="800" height="80" fill="#555"/>
+            <rect x="0" y="420" width="800" height="10" fill="#444"/>
+            <g class="road-lines">
+                <rect x="0" y="455" width="100" height="10" fill="#FFF" opacity="0.8"/>
+                <rect x="200" y="455" width="100" height="10" fill="#FFF" opacity="0.8"/>
+                <rect x="400" y="455" width="100" height="10" fill="#FFF" opacity="0.8"/>
+                <rect x="600" y="455" width="100" height="10" fill="#FFF" opacity="0.8"/>
+                <rect x="800" y="455" width="100" height="10" fill="#FFF" opacity="0.8"/>
+            </g>
+            <ellipse cx="400" cy="435" rx="160" ry="15" fill="black" opacity="0.2"/>
+            <g id="bicycle">
+                <g transform="translate(260, 410)">
+                    <circle r="65" fill="none" stroke="#333" stroke-width="8"/>
+                    <g class="wheel">
+                        <circle r="58" fill="none" stroke="#DDD" stroke-width="2"/>
+                        <line x1="0" y1="-58" x2="0" y2="58" stroke="#BBB" stroke-width="2"/>
+                        <line x1="-58" y1="0" x2="58" y2="0" stroke="#BBB" stroke-width="2"/>
+                        <line x1="-41" y1="-41" x2="41" y2="41" stroke="#BBB" stroke-width="2"/>
+                        <line x1="41" y1="-41" x2="-41" y2="41" stroke="#BBB" stroke-width="2"/>
+                    </g>
+                </g>
+                <g transform="translate(540, 410)">
+                    <circle r="65" fill="none" stroke="#333" stroke-width="8"/>
+                    <g class="wheel">
+                        <circle r="58" fill="none" stroke="#DDD" stroke-width="2"/>
+                        <line x1="0" y1="-58" x2="0" y2="58" stroke="#BBB" stroke-width="2"/>
+                        <line x1="-58" y1="0" x2="58" y2="0" stroke="#BBB" stroke-width="2"/>
+                        <line x1="-41" y1="-41" x2="41" y2="41" stroke="#BBB" stroke-width="2"/>
+                        <line x1="41" y1="-41" x2="-41" y2="41" stroke="#BBB" stroke-width="2"/>
+                    </g>
+                </g>
+                <path d="M260,410 L340,260 L480,260 L540,410" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M340,260 L300,410" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round"/>
+                <path d="M340,260 L430,410" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M480,260 L500,210" fill="none" stroke="#DC2626" stroke-width="6" stroke-linecap="round"/>
+                <path d="M490,210 L530,215" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+                <path d="M300,250 L340,250" fill="none" stroke="#DC2626" stroke-width="6" stroke-linecap="round"/>
+                <path d="M285,250 L355,250" fill="none" stroke="#111" stroke-width="10" stroke-linecap="round"/>
+                <circle cx="400" cy="410" r="12" fill="#444"/>
+                <g>
+                    <line x1="400" y1="410" x2="445" y2="410" stroke="#666" stroke-width="6" stroke-linecap="round" class="pedal"/>
+                    <line x1="400" y1="410" x2="355" y2="410" stroke="#666" stroke-width="6" stroke-linecap="round" class="pedal" style="animation-delay: calc(var(--pedal-speed) / -2);"/>
+                    <rect x="435" y="400" width="24" height="14" rx="3" fill="#111" class="pedal"/>
+                    <rect x="341" y="400" width="24" height="14" rx="3" fill="#111" class="pedal" style="animation-delay: calc(var(--pedal-speed) / -2);"/>
+                </g>
+            </g>
+            <g id="pelican" class="pelican-body-group">
+                <path d="M360,320 Q340,360 345,410" fill="none" stroke="#FFA500" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M335,410 L365,410 L360,425 Z" fill="#FFA500"/>
+                <ellipse cx="380" cy="310" rx="55" ry="65" fill="#FFFFFF" transform="rotate(-15 380 310)"/>
+                <path d="M330,280 Q380,240 430,280 Q440,330 410,360 Q360,370 330,330 Z" fill="#FFFFFF"/>
+                <g class="wing">
+                    <path d="M360,290 Q420,280 430,330 Q400,350 350,340 Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="2"/>
+                    <path d="M370,300 L410,300" stroke="#9CA3AF" stroke-width="2" opacity="0.5"/>
+                    <path d="M375,315 L415,315" stroke="#9CA3AF" stroke-width="2" opacity="0.5"/>
+                </g>
+                <path d="M420,270 Q450,260 460,230 L490,230" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round"/>
+                <circle cx="485" cy="220" r="22" fill="#FFFFFF"/>
+                <circle cx="492" cy="212" r="5" fill="#111"/>
+                <circle cx="494" cy="210" r="1.5" fill="#FFF"/>
+                <g>
+                    <path d="M500,230 Q560,240 600,265 Q560,275 500,245 Z" fill="#F97316"/>
+                    <path d="M500,245 Q560,275 600,265 Q560,285 500,265 Z" fill="#FB923C" class="beak-lower"/>
+                </g>
+                <g class="speech-bubble" style="opacity: 0;">
+                    <path d="M520,160 Q520,140 540,140 L620,140 Q640,140 640,160 L640,190 Q640,210 620,210 L560,210 L540,230 L545,210 L540,210 Q520,210 520,190 Z" fill="white" stroke="#333" stroke-width="2"/>
+                    <text x="580" y="182" text-anchor="middle" font-size="24" font-weight="bold" fill="#333">HONK!</text>
+                </g>
+                <path d="M370,325 Q390,370 400,410" fill="none" stroke="#FFA500" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M388,410 L418,410 L413,425 Z" fill="#FFA500"/>
+                <path d="M465,205 A25,25 0 0,1 510,205" fill="#EF4444" stroke="#B91C1C" stroke-width="3"/>
+                <rect x="470" y="202" width="35" height="5" fill="#B91C1C"/>
+            </g>
+        </svg>
+    </div>
+    <div class="control-panel fixed bottom-6 px-8 py-5 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6 z-20 border border-white/50">
+        <div class="flex flex-col items-center">
+            <label for="speedRange" class="text-gray-700 font-bold mb-1 text-sm uppercase tracking-wider">Cycling Speed</label>
+            <input id="speedRange" type="range" min="1" max="10" value="5" class="w-48 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+        </div>
+        <button id="honkBtn" class="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform duration-150 flex items-center gap-2">
+            <span>📢</span> Honk!
+        </button>
+    </div>
+    <script>
+        const scene = document.getElementById('scene');
+        const speedRange = document.getElementById('speedRange');
+        const honkBtn = document.getElementById('honkBtn');
+        function updateSpeed(val) {
+            const duration = 8.5 - (val * 0.77);
+            scene.style.setProperty('--speed', `${duration}s`);
+        }
+        speedRange.addEventListener('input', (e) => {
+            updateSpeed(e.target.value);
+        });
+        honkBtn.addEventListener('click', () => {
+            if (scene.classList.contains('honking')) return;
+            scene.classList.add('honking');
+            setTimeout(() => {
+                scene.classList.remove('honking');
+            }, 1500);
+        });
+        updateSpeed(5);
+    </script>
+</body>
+</html>
