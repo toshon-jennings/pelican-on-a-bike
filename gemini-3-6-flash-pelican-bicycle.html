@@ -1,12 +1,16 @@
-<!DOCTYPE html><html lang="en" class="h-full">
+<!DOCTYPE html>
+<html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pelly's Coastal Cruise - Animated Pelican on a Bicycle</title>
+  <!-- Tailwind CSS v4 -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     * {
@@ -14,53 +18,79 @@
       user-select: none;
       -webkit-user-select: none;
     }
+    
     body {
       touch-action: manipulation;
       overflow: hidden;
       background-color: #0f172a;
     }
+
+    /* Custom Glassmorphism styling */
     .glass-panel {
       background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.15);
     }
+
     .glass-card {
       background: rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
+
     .glass-button {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.25);
       transition: all 0.2s ease;
     }
+
     .glass-button:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
     }
+
     .glass-button:active {
       transform: translateY(1px);
     }
+
+    /* Animated pulse button glow */
     @keyframes pulse-glow {
       0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
       50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.8); }
     }
+
     .turbo-glow {
       animation: pulse-glow 1.5s infinite;
     }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+    /* Custom scrollbar for drawer */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body class="h-full w-full relative flex flex-col justify-between select-none overflow-hidden text-white">
+
+  <!-- Main Animation Canvas -->
   <canvas id="cruiseCanvas" class="absolute inset-0 w-full h-full z-0 block cursor-grab active:cursor-grabbing"></canvas>
+
+  <!-- TOP HEADER / HUD BAR -->
   <header class="relative z-10 p-4 flex items-center justify-between pointer-events-none">
+    <!-- Left: Title & Speedometer -->
     <div class="flex items-center gap-3 pointer-events-auto">
       <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-xl">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-2xl shadow-lg">🦤</div>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-2xl shadow-lg">
+          🦤
+        </div>
         <div>
           <h1 class="font-bold text-lg leading-tight tracking-wide text-amber-200">PELLY'S CRUISE</h1>
           <p class="text-xs text-amber-100/70 font-medium flex items-center gap-1">
@@ -69,6 +99,8 @@
           </p>
         </div>
       </div>
+
+      <!-- Minigame Stats Badge (Visible during game mode) -->
       <div id="scoreBadge" class="hidden glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-xl">
         <div class="text-2xl animate-bounce">🐟</div>
         <div>
@@ -77,30 +109,44 @@
         </div>
       </div>
     </div>
+
+    <!-- Right: Quick Controls & Menu Toggles -->
     <div class="flex items-center gap-2 pointer-events-auto">
+      <!-- Mode Toggle (Free Cruise vs Fish Catch Game) -->
       <button id="modeToggleBtn" class="glass-button px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 text-sky-200 hover:text-white shadow-lg">
         <i data-lucide="gamepad-2" class="w-4 h-4"></i>
         <span id="modeText">Fish Catch Game</span>
       </button>
+
+      <!-- Audio Mute/Unmute -->
       <button id="audioBtn" class="glass-button p-2.5 rounded-xl text-amber-200 hover:text-amber-100 shadow-lg" title="Toggle Sound">
         <i data-lucide="volume-2" id="audioIcon" class="w-5 h-5"></i>
       </button>
+
+      <!-- Customization Garage Modal Toggle -->
       <button id="openCustomizerBtn" class="glass-button p-2.5 rounded-xl text-amber-200 hover:text-amber-100 shadow-lg" title="Pelican & Bike Customizer">
         <i data-lucide="palette" class="w-5 h-5"></i>
       </button>
+
+      <!-- Atmosphere / Environment Toggle -->
       <button id="openEnvBtn" class="glass-button p-2.5 rounded-xl text-amber-200 hover:text-amber-100 shadow-lg" title="Environment & Time of Day">
         <i data-lucide="sun-medium" class="w-5 h-5"></i>
       </button>
+
+      <!-- Keyboard Info Toggle -->
       <button id="openControlsBtn" class="glass-button p-2.5 rounded-xl text-amber-200 hover:text-amber-100 shadow-lg" title="Controls & Shortcuts">
         <i data-lucide="help-circle" class="w-5 h-5"></i>
       </button>
     </div>
   </header>
+
+  <!-- CENTER OVERLAY FOR FISH CATCH GAME TIMER / RESULTS -->
   <div id="gameOverlay" class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
     <div class="glass-panel p-8 rounded-3xl text-center max-w-sm w-full mx-4 shadow-2xl pointer-events-auto border border-amber-400/30 transform transition-transform duration-300 scale-95" id="gameOverlayCard">
       <div class="text-6xl mb-3">🏆</div>
       <h2 class="text-2xl font-bold text-amber-300 mb-1">Catch Frenzy Complete!</h2>
       <p class="text-sky-100/80 text-sm mb-4">Pelly snapped up a delicious seafood feast!</p>
+      
       <div class="bg-black/20 rounded-2xl p-4 mb-6 flex justify-around items-center border border-white/10">
         <div>
           <div class="text-xs text-sky-200 uppercase font-semibold">Caught</div>
@@ -112,81 +158,119 @@
           <div id="rankTitle" class="text-lg font-bold text-emerald-300">Master Pelican</div>
         </div>
       </div>
+
       <button id="restartGameBtn" class="w-full py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-900 font-extrabold rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2 text-base">
         <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Play Again
       </button>
     </div>
   </div>
+
+  <!-- FLOATING ACTION TOAST NOTIFICATIONS -->
   <div id="toast" class="absolute top-20 left-1/2 -translate-x-1/2 z-20 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-2">
     <div class="glass-panel px-5 py-2.5 rounded-full text-amber-200 text-sm font-semibold flex items-center gap-2 shadow-2xl border border-amber-300/30">
       <span id="toastIcon">✨</span>
       <span id="toastMessage">Wheelie Time!</span>
     </div>
   </div>
+
+  <!-- BOTTOM CONTROL BAR / ACTION BUTTONS -->
   <footer class="relative z-10 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 pointer-events-none">
+    
+    <!-- Left: Dynamic Tricks & Interactive Buttons -->
     <div class="flex items-center gap-2 flex-wrap justify-center pointer-events-auto">
       <button id="beakBtn" class="glass-button px-4 py-3 rounded-2xl font-bold text-sm text-sky-200 hover:text-white flex items-center gap-2 shadow-lg active:scale-95" title="Open Pouch Beak (Spacebar)">
         <span class="text-xl">😮</span>
         <span>Snap Beak</span>
         <span class="hidden sm:inline-block text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">SPACE</span>
       </button>
+
       <button id="bellBtn" class="glass-button px-4 py-3 rounded-2xl font-bold text-sm text-amber-200 hover:text-amber-100 flex items-center gap-2 shadow-lg active:scale-95" title="Ring Bicycle Bell (B)">
         <span class="text-xl">🔔</span>
         <span>Ring Bell</span>
         <span class="hidden sm:inline-block text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">B</span>
       </button>
+
       <button id="wheelieBtn" class="glass-button px-4 py-3 rounded-2xl font-bold text-sm text-emerald-200 hover:text-emerald-100 flex items-center gap-2 shadow-lg active:scale-95" title="Pop a Wheelie (W / Up)">
         <span class="text-xl">🚲</span>
         <span>Wheelie!</span>
         <span class="hidden sm:inline-block text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">W</span>
       </button>
+
       <button id="jumpBtn" class="glass-button px-4 py-3 rounded-2xl font-bold text-sm text-purple-200 hover:text-purple-100 flex items-center gap-2 shadow-lg active:scale-95" title="Bunnypop Jump (J)">
         <span class="text-xl">🦘</span>
         <span>Hop Jump</span>
         <span class="hidden sm:inline-block text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">J</span>
       </button>
+
       <button id="squawkBtn" class="glass-button px-4 py-3 rounded-2xl font-bold text-sm text-pink-200 hover:text-pink-100 flex items-center gap-2 shadow-lg active:scale-95" title="Squawk Sound (S)">
         <span class="text-xl">📢</span>
         <span>Squawk</span>
         <span class="hidden sm:inline-block text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">S</span>
       </button>
     </div>
+
+    <!-- Right: Pedaling Cruise & Turbo Controls -->
     <div class="flex items-center gap-3 pointer-events-auto bg-black/40 backdrop-blur-md p-2 rounded-2xl border border-white/10">
       <div class="flex items-center gap-2 px-2">
         <i data-lucide="gauge" class="w-4 h-4 text-amber-400"></i>
         <input type="range" id="speedSlider" min="0" max="35" value="12" class="w-24 sm:w-32 accent-amber-400 cursor-pointer">
       </div>
+
       <button id="turboBtn" class="px-5 py-3 rounded-xl font-black text-sm bg-gradient-to-r from-amber-400 to-red-500 hover:from-amber-300 hover:to-red-400 text-slate-900 shadow-xl transition transform active:scale-95 flex items-center gap-2 turbo-glow">
         <span>⚡ TURBO</span>
       </button>
     </div>
   </footer>
+
+  <!-- CUSTOMIZER MODAL / DRAWER -->
   <div id="customizerModal" class="fixed inset-0 z-50 flex justify-end pointer-events-none opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-xs pointer-events-auto" id="closeCustomizerBackdrop"></div>
     <div class="relative w-full max-w-md h-full glass-panel p-6 overflow-y-auto pointer-events-auto flex flex-col justify-between shadow-2xl border-l border-white/15 transform translate-x-full transition-transform duration-300 ease-out" id="customizerDrawer">
       <div>
         <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
           <div class="flex items-center gap-3">
-            <div class="p-2 rounded-xl bg-amber-400/20 text-amber-300"><i data-lucide="palette" class="w-6 h-6"></i></div>
+            <div class="p-2 rounded-xl bg-amber-400/20 text-amber-300">
+              <i data-lucide="palette" class="w-6 h-6"></i>
+            </div>
             <div>
               <h2 class="text-xl font-bold text-amber-200">Style Garage</h2>
               <p class="text-xs text-sky-200/70">Customize Pelly & Bicycle</p>
             </div>
           </div>
-          <button id="closeCustomizerBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10"><i data-lucide="x" class="w-6 h-6"></i></button>
+          <button id="closeCustomizerBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
         </div>
+
+        <!-- Section 1: Pelican Accessories -->
         <div class="mb-6">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2"><span>🎩</span> Pelican Outfits</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2">
+            <span>🎩</span> Pelican Outfits
+          </h3>
           <div class="grid grid-cols-2 gap-2" id="hatOptions">
-            <button data-hat="sunglasses" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">🕶️ Sunglasses</button>
-            <button data-hat="captain" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">⚓ Captain Hat</button>
-            <button data-hat="party" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">🥳 Party Hat</button>
-            <button data-hat="straw" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">👒 Beach Straw Hat</button>
-            <button data-hat="none" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">🦤 Natural Look</button>
+            <button data-hat="sunglasses" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">
+              <span>🕶️</span> Sunglasses
+            </button>
+            <button data-hat="captain" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>⚓</span> Captain Hat
+            </button>
+            <button data-hat="party" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>🥳</span> Party Hat
+            </button>
+            <button data-hat="straw" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>👒</span> Beach Straw Hat
+            </button>
+            <button data-hat="none" class="hat-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>🦤</span> Natural Look
+            </button>
           </div>
         </div>
+
+        <!-- Section 2: Bicycle Color -->
         <div class="mb-6">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2"><span>🎨</span> Bike Frame Color</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2">
+            <span>🎨</span> Bike Frame Color
+          </h3>
           <div class="flex items-center gap-3 flex-wrap" id="bikeColorOptions">
             <button data-color="#f59e0b" class="color-opt w-10 h-10 rounded-full bg-amber-500 ring-2 ring-white scale-110 shadow-lg"></button>
             <button data-color="#06b6d4" class="color-opt w-10 h-10 rounded-full bg-cyan-500 ring-2 ring-transparent shadow-lg"></button>
@@ -197,183 +281,415 @@
             <button data-color="#f97316" class="color-opt w-10 h-10 rounded-full bg-orange-500 ring-2 ring-transparent shadow-lg"></button>
           </div>
         </div>
+
+        <!-- Section 3: Basket Contents -->
         <div class="mb-6">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2"><span>🧺</span> Basket Stuff</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2">
+            <span>🧺</span> Basket Stuff
+          </h3>
           <div class="grid grid-cols-2 gap-2" id="basketOptions">
-            <button data-basket="fish" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">🐟 Fresh Fish</button>
-            <button data-basket="flowers" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">🌺 Tropical Flowers</button>
-            <button data-basket="boombox" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">📻 Retro Radio</button>
-            <button data-basket="empty" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">🧹 Empty Basket</button>
+            <button data-basket="fish" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">
+              <span>🐟</span> Fresh Fish
+            </button>
+            <button data-basket="flowers" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>🌺</span> Tropical Flowers
+            </button>
+            <button data-basket="boombox" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>📻</span> Retro Radio
+            </button>
+            <button data-basket="empty" class="basket-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>🧹</span> Empty Basket
+            </button>
           </div>
         </div>
+
+        <!-- Section 4: Speed Particle Trail -->
         <div class="mb-6">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2"><span>✨</span> Rear Trail Effect</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-amber-300/80 mb-3 flex items-center gap-2">
+            <span>✨</span> Rear Trail Effect
+          </h3>
           <div class="grid grid-cols-2 gap-2" id="trailOptions">
-            <button data-trail="bubbles" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">🫧 Coastal Bubbles</button>
-            <button data-trail="rainbow" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">🌈 Rainbow Sparkles</button>
-            <button data-trail="hearts" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">💖 Hearts & Love</button>
-            <button data-trail="stars" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">⭐ Starlight Dust</button>
+            <button data-trail="bubbles" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-amber-400 bg-amber-400/20">
+              <span>🫧</span> Coastal Bubbles
+            </button>
+            <button data-trail="rainbow" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>🌈</span> Rainbow Sparkles
+            </button>
+            <button data-trail="hearts" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>💖</span> Hearts & Love
+            </button>
+            <button data-trail="stars" class="trail-opt p-3 rounded-xl glass-card text-left text-sm font-semibold flex items-center gap-2 border-2 border-transparent">
+              <span>⭐</span> Starlight Dust
+            </button>
           </div>
         </div>
       </div>
-      <div class="pt-4 border-t border-white/10 text-center text-xs text-sky-200/60">Changes apply immediately in real-time!</div>
+
+      <div class="pt-4 border-t border-white/10 text-center text-xs text-sky-200/60">
+        Changes apply immediately in real-time!
+      </div>
     </div>
   </div>
+
+  <!-- ENVIRONMENT / TIME OF DAY MODAL -->
   <div id="envModal" class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-xs pointer-events-auto" id="closeEnvBackdrop"></div>
     <div class="relative w-full max-w-md glass-panel p-6 rounded-3xl pointer-events-auto shadow-2xl border border-white/20 mx-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
         <div class="flex items-center gap-3">
-          <div class="p-2 rounded-xl bg-sky-400/20 text-sky-300"><i data-lucide="sun-medium" class="w-6 h-6"></i></div>
+          <div class="p-2 rounded-xl bg-sky-400/20 text-sky-300">
+            <i data-lucide="sun-medium" class="w-6 h-6"></i>
+          </div>
           <div>
             <h2 class="text-xl font-bold text-sky-200">Coastal World Preset</h2>
             <p class="text-xs text-sky-200/70">Select your ride atmosphere</p>
           </div>
         </div>
-        <button id="closeEnvBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <button id="closeEnvBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
       </div>
+
       <div class="grid grid-cols-1 gap-3 mb-4" id="envPresetList">
         <button data-env="day" class="env-preset-btn p-4 rounded-2xl glass-card text-left flex items-center justify-between border-2 border-amber-400 bg-amber-400/10">
-          <div class="flex items-center gap-3"><span class="text-3xl">☀️</span>
-            <div><div class="font-bold text-amber-200">Sunny Beach Boardwalk</div><div class="text-xs text-sky-200/70">Bright azure skies, turquoise sea, crisp breeze</div></div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">☀️</span>
+            <div>
+              <div class="font-bold text-amber-200">Sunny Beach Boardwalk</div>
+              <div class="text-xs text-sky-200/70">Bright azure skies, turquoise sea, crisp breeze</div>
+            </div>
           </div>
         </button>
+
         <button data-env="sunset" class="env-preset-btn p-4 rounded-2xl glass-card text-left flex items-center justify-between border-2 border-transparent">
-          <div class="flex items-center gap-3"><span class="text-3xl">🌅</span>
-            <div><div class="font-bold text-orange-200">Golden Hour Sunset</div><div class="text-xs text-sky-200/70">Warm amber sky, purple clouds, golden water</div></div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🌅</span>
+            <div>
+              <div class="font-bold text-orange-200">Golden Hour Sunset</div>
+              <div class="text-xs text-sky-200/70">Warm amber sky, purple clouds, golden water</div>
+            </div>
           </div>
         </button>
+
         <button data-env="cyber" class="env-preset-btn p-4 rounded-2xl glass-card text-left flex items-center justify-between border-2 border-transparent">
-          <div class="flex items-center gap-3"><span class="text-3xl">🌃</span>
-            <div><div class="font-bold text-pink-300">Neon Cyber Coastal</div><div class="text-xs text-sky-200/70">Synthwave grid moon, glowing palms, neon vibes</div></div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🌃</span>
+            <div>
+              <div class="font-bold text-pink-300">Neon Cyber Coastal</div>
+              <div class="text-xs text-sky-200/70">Synthwave grid moon, glowing palms, neon vibes</div>
+            </div>
           </div>
         </button>
+
         <button data-env="rain" class="env-preset-btn p-4 rounded-2xl glass-card text-left flex items-center justify-between border-2 border-transparent">
-          <div class="flex items-center gap-3"><span class="text-3xl">🌧️</span>
-            <div><div class="font-bold text-blue-200">Tropical Sea Breeze</div><div class="text-xs text-sky-200/70">Soft misty rain drops, moody ocean reflections</div></div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🌧️</span>
+            <div>
+              <div class="font-bold text-blue-200">Tropical Sea Breeze</div>
+              <div class="text-xs text-sky-200/70">Soft misty rain drops, moody ocean reflections</div>
+            </div>
           </div>
         </button>
       </div>
     </div>
   </div>
+
+  <!-- CONTROLS & HELP MODAL -->
   <div id="controlsModal" class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-xs pointer-events-auto" id="closeControlsBackdrop"></div>
     <div class="relative w-full max-w-md glass-panel p-6 rounded-3xl pointer-events-auto shadow-2xl border border-white/20 mx-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
         <div class="flex items-center gap-3">
-          <div class="p-2 rounded-xl bg-emerald-400/20 text-emerald-300"><i data-lucide="keyboard" class="w-6 h-6"></i></div>
+          <div class="p-2 rounded-xl bg-emerald-400/20 text-emerald-300">
+            <i data-lucide="keyboard" class="w-6 h-6"></i>
+          </div>
           <div>
             <h2 class="text-xl font-bold text-emerald-200">Controls & Shortcuts</h2>
             <p class="text-xs text-sky-200/70">Ride & Perform Stunts</p>
           </div>
         </div>
-        <button id="closeControlsBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <button id="closeControlsBtn" class="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
       </div>
+
       <div class="space-y-2.5 text-sm">
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Catch Fish / Open Beak</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">SPACE</kbd></div>
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Pop a Wheelie</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">W or UP ARROW</kbd></div>
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Hop / Bunny Jump</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">J</kbd></div>
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Ring Bicycle Bell</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">B</kbd></div>
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Squawk Sound</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">S</kbd></div>
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10"><span class="text-sky-200">Turbo Acceleration Boost</span><kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">HOLD SHIFT / TURBO</kbd></div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Catch Fish / Open Beak</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">SPACE</kbd>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Pop a Wheelie</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">W or UP ARROW</kbd>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Hop / Bunny Jump</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">J</kbd>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Ring Bicycle Bell</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">B</kbd>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Squawk Sound</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">S</kbd>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <span class="text-sky-200">Turbo Acceleration Boost</span>
+          <kbd class="px-2.5 py-1 bg-white/20 rounded font-mono font-bold text-xs text-amber-300">HOLD SHIFT / TURBO</kbd>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- MAIN ANIMATION & GAME SCRIPT -->
   <script>
+    // Initialize Lucide Icons
     lucide.createIcons();
+
+    // Web Audio Synthesizer Engine
     class AudioEngine {
-      constructor() { this.ctx = null; this.muted = false; }
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.bgmOsc = null;
+      }
+
       init() {
-        if (!this.ctx) { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) { this.ctx = new AudioCtx(); } }
-        if (this.ctx && this.ctx.state === 'suspended') { this.ctx.resume(); }
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
       }
+
       playBell() {
-        if (this.muted) return; this.init(); if (!this.ctx) return;
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
         const now = this.ctx.currentTime;
-        const osc1 = this.ctx.createOscillator(); const osc2 = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-        osc1.type = 'sine'; osc1.frequency.setValueAtTime(1480, now);
-        osc2.type = 'sine'; osc2.frequency.setValueAtTime(2200, now);
-        gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-        osc1.connect(gain); osc2.connect(gain); gain.connect(this.ctx.destination);
-        osc1.start(now); osc2.start(now); osc1.stop(now + 0.8); osc2.stop(now + 0.8);
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(1480, now); // F6
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(2200, now); 
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.8);
+        osc2.stop(now + 0.8);
       }
+
       playSquawk() {
-        if (this.muted) return; this.init(); if (!this.ctx) return;
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
         const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(260, now);
-        osc.frequency.linearRampToValueAtTime(450, now + 0.1); osc.frequency.linearRampToValueAtTime(200, now + 0.25);
-        gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
-        osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.28);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.linearRampToValueAtTime(450, now + 0.1);
+        osc.frequency.linearRampToValueAtTime(200, now + 0.25);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.28);
       }
+
       playFishCatch() {
-        if (this.muted) return; this.init(); if (!this.ctx) return;
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
         const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-        osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
         osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-        gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-        osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.18);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.18);
       }
+
       playJump() {
-        if (this.muted) return; this.init(); if (!this.ctx) return;
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
         const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-        osc.type = 'sine'; osc.frequency.setValueAtTime(180, now);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(180, now);
         osc.frequency.exponentialRampToValueAtTime(500, now + 0.2);
-        gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-        osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.22);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.22);
       }
     }
+
     const sound = new AudioEngine();
+
+    // Canvas & Game State Setup
     const canvas = document.getElementById('cruiseCanvas');
     const ctx = canvas.getContext('2d');
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+
+    // State Variables
     const state = {
-      speed: 12, turbo: false, crankAngle: 0, wheelAngle: 0,
-      bikeYOffset: 0, bikeVy: 0, wheelieAngle: 0, targetWheelie: 0,
-      beakOpen: 0, targetBeakOpen: 0,
-      hat: 'sunglasses', bikeColor: '#f59e0b', basketItem: 'fish', trailType: 'bubbles',
-      env: 'day', mode: 'cruise', fishCaught: 0, gameTimer: 30, gameActive: false
+      speed: 12, // Cruise speed MPH
+      turbo: false,
+      crankAngle: 0,
+      wheelAngle: 0,
+      
+      // Bike Jump / Stunt Physics
+      bikeYOffset: 0,
+      bikeVy: 0,
+      wheelieAngle: 0, // In radians
+      targetWheelie: 0,
+      
+      // Pelican Beak Pouch State
+      beakOpen: 0, // 0 to 1
+      targetBeakOpen: 0,
+      
+      // Accessories & Customization
+      hat: 'sunglasses', // 'sunglasses', 'captain', 'party', 'straw', 'none'
+      bikeColor: '#f59e0b',
+      basketItem: 'fish', // 'fish', 'flowers', 'boombox', 'empty'
+      trailType: 'bubbles', // 'bubbles', 'rainbow', 'hearts', 'stars'
+      
+      // Environment Preset
+      env: 'day', // 'day', 'sunset', 'cyber', 'rain'
+      
+      // Game Mode State
+      mode: 'cruise', // 'cruise' or 'minigame'
+      fishCaught: 0,
+      gameTimer: 30,
+      gameActive: false
     };
+
+    // Particles & Entities
     const particles = [];
     const flyingFish = [];
     const backgroundClouds = [];
     const backgroundPalms = [];
     const oceanSails = [];
+
+    // Initialize Background World Objects
     function initWorld() {
+      // Clouds
       backgroundClouds.length = 0;
       for (let i = 0; i < 6; i++) {
-        backgroundClouds.push({ x: Math.random() * canvas.width, y: 40 + Math.random() * (canvas.height * 0.2), scale: 0.6 + Math.random() * 0.8, speed: 0.2 + Math.random() * 0.3 });
+        backgroundClouds.push({
+          x: Math.random() * canvas.width,
+          y: 40 + Math.random() * (canvas.height * 0.2),
+          scale: 0.6 + Math.random() * 0.8,
+          speed: 0.2 + Math.random() * 0.3
+        });
       }
+
+      // Palms
       backgroundPalms.length = 0;
       for (let i = 0; i < 8; i++) {
-        backgroundPalms.push({ x: i * (canvas.width / 4) + Math.random() * 100, scale: 0.7 + Math.random() * 0.4 });
+        backgroundPalms.push({
+          x: i * (canvas.width / 4) + Math.random() * 100,
+          scale: 0.7 + Math.random() * 0.4
+        });
       }
+
+      // Sailboats
       oceanSails.length = 0;
       for (let i = 0; i < 3; i++) {
-        oceanSails.push({ x: Math.random() * canvas.width, speed: 0.15 + Math.random() * 0.2, scale: 0.5 + Math.random() * 0.5 });
+        oceanSails.push({
+          x: Math.random() * canvas.width,
+          speed: 0.15 + Math.random() * 0.2,
+          scale: 0.5 + Math.random() * 0.5
+        });
       }
     }
     initWorld();
+
+    // Spawn Flying Fish for Minigame or Casual Snack
     function spawnFish() {
       const startX = canvas.width + 50;
       const groundY = canvas.height * 0.75;
       const startY = groundY - 80 - Math.random() * 180;
-      flyingFish.push({ x: startX, y: startY, baseY: startY, vx: -(2.5 + Math.random() * 3.5), phase: Math.random() * Math.PI * 2, isGolden: Math.random() < 0.25, caught: false, size: 16 + Math.random() * 8 });
+      
+      flyingFish.push({
+        x: startX,
+        y: startY,
+        baseY: startY,
+        vx: -(2.5 + Math.random() * 3.5),
+        phase: Math.random() * Math.PI * 2,
+        isGolden: Math.random() < 0.25,
+        caught: false,
+        size: 16 + Math.random() * 8
+      });
     }
+
+    // Helper Inverse Kinematics for Pedaling Legs
     function solve2LinkIK(hx, hy, px, py, l1, l2, bendDirection = -1) {
-      const dx = px - hx; const dy = py - hy; const dist = Math.sqrt(dx * dx + dy * dy);
+      const dx = px - hx;
+      const dy = py - hy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
       const clampedDist = Math.min(Math.max(dist, 0.1), l1 + l2 - 0.1);
+
       const alpha = Math.atan2(dy, dx);
       const cosAngle = (l1 * l1 + clampedDist * clampedDist - l2 * l2) / (2 * l1 * clampedDist);
       const angleOffset = Math.acos(Math.min(Math.max(cosAngle, -1), 1));
+
       const kneeAngle = alpha + bendDirection * angleOffset;
-      const kx = hx + l1 * Math.cos(kneeAngle); const ky = hy + l1 * Math.sin(kneeAngle);
+      const kx = hx + l1 * Math.cos(kneeAngle);
+      const ky = hy + l1 * Math.sin(kneeAngle);
+
       return { kx, ky };
     }
+
+    // Toast Notification helper
     let toastTimeout = null;
     function showToast(msg, icon = '✨') {
       const toastEl = document.getElementById('toast');
@@ -381,107 +697,268 @@
       document.getElementById('toastIcon').innerText = icon;
       toastEl.classList.remove('opacity-0', '-translate-y-2');
       toastEl.classList.add('opacity-100', 'translate-y-0');
+
       if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => { toastEl.classList.remove('opacity-100', 'translate-y-0'); toastEl.classList.add('opacity-0', '-translate-y-2'); }, 2000);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('opacity-100', 'translate-y-0');
+        toastEl.classList.add('opacity-0', '-translate-y-2');
+      }, 2000);
     }
+
+    // Interactive Trigger Functions
     function triggerBeak() {
-      sound.init(); state.targetBeakOpen = 1;
-      setTimeout(() => { state.targetBeakOpen = 0; }, 350);
+      sound.init();
+      state.targetBeakOpen = 1;
+      setTimeout(() => {
+        state.targetBeakOpen = 0;
+      }, 350);
+
+      // Check collision with flying fish immediately when snapping beak!
       checkFishCatch();
     }
+
     function triggerBell() {
-      sound.playBell(); showToast("Ring Ring!", "🔔");
-      const bikeX = canvas.width * 0.38; const bikeY = canvas.height * 0.75 - 120 + state.bikeYOffset;
+      sound.playBell();
+      showToast("Ring Ring!", "🔔");
+      
+      // Spawn Bell Sound Wave Particles
+      const bikeX = canvas.width * 0.38;
+      const bikeY = canvas.height * 0.75 - 120 + state.bikeYOffset;
       for (let i = 0; i < 4; i++) {
-        particles.push({ x: bikeX + 70, y: bikeY - 20, vx: 1 + i * 0.8, vy: -0.5 + Math.random(), size: 12 + i * 8, alpha: 1, type: 'bellWave' });
+        particles.push({
+          x: bikeX + 70,
+          y: bikeY - 20,
+          vx: 1 + i * 0.8,
+          vy: -0.5 + Math.random(),
+          size: 12 + i * 8,
+          alpha: 1,
+          type: 'bellWave'
+        });
       }
     }
+
     function triggerWheelie() {
-      sound.init(); state.targetWheelie = Math.PI / 7; showToast("Wheelie Time!", "🚲");
-      setTimeout(() => { state.targetWheelie = 0; }, 1200);
+      sound.init();
+      state.targetWheelie = Math.PI / 7;
+      showToast("Wheelie Time!", "🚲");
+      setTimeout(() => {
+        state.targetWheelie = 0;
+      }, 1200);
     }
+
     function triggerJump() {
       sound.playJump();
-      if (state.bikeYOffset >= 0) { state.bikeVy = -11; showToast("Boing!", "🦘"); }
+      if (state.bikeYOffset >= 0) {
+        state.bikeVy = -11;
+        showToast("Boing!", "🦘");
+      }
     }
-    function triggerSquawk() { sound.playSquawk(); showToast("Squawk! Quack!", "📢"); }
+
+    function triggerSquawk() {
+      sound.playSquawk();
+      showToast("Squawk! Quack!", "📢");
+    }
+
+    // Minigame Catch Logic
     function checkFishCatch() {
-      const bikeX = canvas.width * 0.38; const bikeY = canvas.height * 0.75 + state.bikeYOffset;
-      const headX = bikeX + 45; const headY = bikeY - 145;
+      const bikeX = canvas.width * 0.38;
+      const bikeY = canvas.height * 0.75 + state.bikeYOffset;
+      
+      // Mouth position
+      const headX = bikeX + 45;
+      const headY = bikeY - 145;
+
       flyingFish.forEach(f => {
         if (!f.caught) {
-          const dx = f.x - headX; const dy = f.y - headY; const dist = Math.sqrt(dx * dx + dy * dy);
+          const dx = f.x - headX;
+          const dy = f.y - headY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
           if (dist < 75) {
-            f.caught = true; sound.playFishCatch();
-            const points = f.isGolden ? 3 : 1; state.fishCaught += points;
+            f.caught = true;
+            sound.playFishCatch();
+            const points = f.isGolden ? 3 : 1;
+            state.fishCaught += points;
             document.getElementById('fishCountText').innerText = state.fishCaught;
+
             showToast(f.isGolden ? "Golden Sardine! +3" : "Fish Caught! +1", f.isGolden ? "🌟" : "🐟");
+
+            // Particle Splash
             for (let i = 0; i < 12; i++) {
-              particles.push({ x: f.x, y: f.y, vx: (Math.random() - 0.5) * 6, vy: -Math.random() * 5 - 2, size: 4 + Math.random() * 4, color: f.isGolden ? '#fbbf24' : '#38bdf8', alpha: 1, type: 'sparkle' });
+              particles.push({
+                x: f.x,
+                y: f.y,
+                vx: (Math.random() - 0.5) * 6,
+                vy: -Math.random() * 5 - 2,
+                size: 4 + Math.random() * 4,
+                color: f.isGolden ? '#fbbf24' : '#38bdf8',
+                alpha: 1,
+                type: 'sparkle'
+              });
             }
           }
         }
       });
     }
+
+    // MAIN RENDER LOOP
     let lastTime = performance.now();
+
     function render(time) {
-      const dt = Math.min((time - lastTime) / 1000, 0.1); lastTime = time;
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+
+      // Update State Physics
       const activeSpeed = state.turbo ? state.speed * 1.8 : state.speed;
       document.getElementById('speedDisplay').innerText = Math.round(activeSpeed);
-      state.crankAngle += activeSpeed * dt * 0.35; state.wheelAngle += activeSpeed * dt * 0.4;
+
+      state.crankAngle += activeSpeed * dt * 0.35;
+      state.wheelAngle += activeSpeed * dt * 0.4;
+
+      // Smooth Beak & Wheelie Interpolation
       state.beakOpen += (state.targetBeakOpen - state.beakOpen) * 15 * dt;
       state.wheelieAngle += (state.targetWheelie - state.wheelieAngle) * 8 * dt;
+
+      // Bike Jump Gravity Physics
       if (state.bikeYOffset < 0 || state.bikeVy !== 0) {
-        state.bikeYOffset += state.bikeVy; state.bikeVy += 0.65;
-        if (state.bikeYOffset >= 0) { state.bikeYOffset = 0; state.bikeVy = 0; }
+        state.bikeYOffset += state.bikeVy;
+        state.bikeVy += 0.65; // gravity
+        if (state.bikeYOffset >= 0) {
+          state.bikeYOffset = 0;
+          state.bikeVy = 0;
+        }
       }
-      if (state.beakOpen > 0.4) { checkFishCatch(); }
-      if (Math.random() < 0.02) { spawnFish(); }
+
+      // Check Automatic Catch Proximity when beak is wide open
+      if (state.beakOpen > 0.4) {
+        checkFishCatch();
+      }
+
+      // Spawn random fish periodically
+      if (Math.random() < 0.02) {
+        spawnFish();
+      }
+
+      // Spawn Rear Trail Particles
       if (activeSpeed > 2 && Math.random() < 0.4) {
-        const bikeX = canvas.width * 0.38 - 80; const bikeY = canvas.height * 0.75 + state.bikeYOffset;
-        particles.push({ x: bikeX, y: bikeY - 10 + (Math.random() - 0.5) * 15, vx: -2 - Math.random() * 2, vy: -Math.random() * 1.5, size: 6 + Math.random() * 8, alpha: 1, type: state.trailType });
+        const bikeX = canvas.width * 0.38 - 80;
+        const bikeY = canvas.height * 0.75 + state.bikeYOffset;
+        particles.push({
+          x: bikeX,
+          y: bikeY - 10 + (Math.random() - 0.5) * 15,
+          vx: -2 - Math.random() * 2,
+          vy: -Math.random() * 1.5,
+          size: 6 + Math.random() * 8,
+          alpha: 1,
+          type: state.trailType
+        });
       }
-      drawEnvironment(activeSpeed, dt); drawPelicanBicycle(); drawEntitiesAndParticles(dt);
+
+      // DRAW ENVIRONMENT
+      drawEnvironment(activeSpeed, dt);
+
+      // DRAW BICYCLE & ANIMATED PELICAN
+      drawPelicanBicycle();
+
+      // DRAW PARTICLES & ENTITIES
+      drawEntitiesAndParticles(dt);
+
       requestAnimationFrame(render);
     }
+
+    // Draw Coastal Environment Parallax
     function drawEnvironment(speed, dt) {
-      const w = canvas.width; const h = canvas.height; const groundY = h * 0.75;
+      const w = canvas.width;
+      const h = canvas.height;
+      const groundY = h * 0.75;
+
+      // Color Schemes based on Preset
       let skyGradient, seaColor, roadColor, plankColor;
+
       if (state.env === 'sunset') {
         skyGradient = ctx.createLinearGradient(0, 0, 0, groundY);
-        skyGradient.addColorStop(0, '#31103f'); skyGradient.addColorStop(0.5, '#82264e'); skyGradient.addColorStop(1, '#f97316');
-        seaColor = '#4c1d95'; roadColor = '#3f2138'; plankColor = '#6b21a8';
+        skyGradient.addColorStop(0, '#31103f');
+        skyGradient.addColorStop(0.5, '#82264e');
+        skyGradient.addColorStop(1, '#f97316');
+
+        seaColor = '#4c1d95';
+        roadColor = '#3f2138';
+        plankColor = '#6b21a8';
       } else if (state.env === 'cyber') {
         skyGradient = ctx.createLinearGradient(0, 0, 0, groundY);
-        skyGradient.addColorStop(0, '#090d16'); skyGradient.addColorStop(0.6, '#1e1b4b'); skyGradient.addColorStop(1, '#831843');
-        seaColor = '#0f172a'; roadColor = '#181825'; plankColor = '#0284c7';
+        skyGradient.addColorStop(0, '#090d16');
+        skyGradient.addColorStop(0.6, '#1e1b4b');
+        skyGradient.addColorStop(1, '#831843');
+
+        seaColor = '#0f172a';
+        roadColor = '#181825';
+        plankColor = '#0284c7';
       } else if (state.env === 'rain') {
         skyGradient = ctx.createLinearGradient(0, 0, 0, groundY);
-        skyGradient.addColorStop(0, '#1e293b'); skyGradient.addColorStop(0.7, '#334155'); skyGradient.addColorStop(1, '#475569');
-        seaColor = '#0f172a'; roadColor = '#1e293b'; plankColor = '#334155';
-      } else {
+        skyGradient.addColorStop(0, '#1e293b');
+        skyGradient.addColorStop(0.7, '#334155');
+        skyGradient.addColorStop(1, '#475569');
+
+        seaColor = '#0f172a';
+        roadColor = '#1e293b';
+        plankColor = '#334155';
+      } else { // Day
         skyGradient = ctx.createLinearGradient(0, 0, 0, groundY);
-        skyGradient.addColorStop(0, '#38bdf8'); skyGradient.addColorStop(0.6, '#7dd3fc'); skyGradient.addColorStop(1, '#bae6fd');
-        seaColor = '#0284c7'; roadColor = '#d97706'; plankColor = '#f59e0b';
+        skyGradient.addColorStop(0, '#38bdf8');
+        skyGradient.addColorStop(0.6, '#7dd3fc');
+        skyGradient.addColorStop(1, '#bae6fd');
+
+        seaColor = '#0284c7';
+        roadColor = '#d97706';
+        plankColor = '#f59e0b';
       }
-      ctx.fillStyle = skyGradient; ctx.fillRect(0, 0, w, h);
+
+      // Sky
+      ctx.fillStyle = skyGradient;
+      ctx.fillRect(0, 0, w, h);
+
+      // Celestial Body (Sun/Moon)
       ctx.save();
       if (state.env === 'cyber') {
-        ctx.fillStyle = '#f43f5e'; ctx.shadowColor = '#f43f5e'; ctx.shadowBlur = 30;
-        ctx.beginPath(); ctx.arc(w * 0.75, groundY - 100, 60, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#090d16'; ctx.lineWidth = 3;
-        for (let y = groundY - 140; y < groundY - 40; y += 12) { ctx.beginPath(); ctx.moveTo(w * 0.75 - 60, y); ctx.lineTo(w * 0.75 + 60, y); ctx.stroke(); }
+        // Glowing Neon Synthwave Sun
+        ctx.fillStyle = '#f43f5e';
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 30;
+        ctx.beginPath();
+        ctx.arc(w * 0.75, groundY - 100, 60, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Grid lines on synth moon
+        ctx.strokeStyle = '#090d16';
+        ctx.lineWidth = 3;
+        for (let y = groundY - 140; y < groundY - 40; y += 12) {
+          ctx.beginPath();
+          ctx.moveTo(w * 0.75 - 60, y);
+          ctx.lineTo(w * 0.75 + 60, y);
+          ctx.stroke();
+        }
       } else if (state.env === 'sunset') {
-        ctx.fillStyle = '#fef08a'; ctx.shadowColor = '#f97316'; ctx.shadowBlur = 40;
-        ctx.beginPath(); ctx.arc(w * 0.7, groundY - 60, 50, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fef08a';
+        ctx.shadowColor = '#f97316';
+        ctx.shadowBlur = 40;
+        ctx.beginPath();
+        ctx.arc(w * 0.7, groundY - 60, 50, 0, Math.PI * 2);
+        ctx.fill();
       } else if (state.env === 'day') {
-        ctx.fillStyle = '#fef08a'; ctx.shadowColor = '#fef08a'; ctx.shadowBlur = 25;
-        ctx.beginPath(); ctx.arc(w * 0.8, h * 0.18, 45, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fef08a';
+        ctx.shadowColor = '#fef08a';
+        ctx.shadowBlur = 25;
+        ctx.beginPath();
+        ctx.arc(w * 0.8, h * 0.18, 45, 0, Math.PI * 2);
+        ctx.fill();
       }
       ctx.restore();
+
+      // Background Parallax Clouds
       backgroundClouds.forEach(c => {
         c.x -= c.speed * (speed * 0.1 + 0.5);
         if (c.x < -150) c.x = w + 150;
+
         ctx.fillStyle = state.env === 'cyber' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(255, 255, 255, 0.55)';
         ctx.beginPath();
         ctx.arc(c.x, c.y, 25 * c.scale, 0, Math.PI * 2);
@@ -489,225 +966,856 @@
         ctx.arc(c.x + 45 * c.scale, c.y, 20 * c.scale, 0, Math.PI * 2);
         ctx.fill();
       });
-      const oceanHeight = h * 0.18; const oceanY = groundY - oceanHeight;
-      ctx.fillStyle = seaColor; ctx.fillRect(0, oceanY, w, oceanHeight);
+
+      // Ocean Layer & Animated Waves
+      const oceanHeight = h * 0.18;
+      const oceanY = groundY - oceanHeight;
+      ctx.fillStyle = seaColor;
+      ctx.fillRect(0, oceanY, w, oceanHeight);
+
+      // Waves
       ctx.fillStyle = state.env === 'cyber' ? '#38bdf8' : 'rgba(255, 255, 255, 0.3)';
       const waveOffset = (performance.now() * 0.003 * speed) % 60;
-      for (let x = -60; x < w + 60; x += 60) { ctx.beginPath(); ctx.arc(x + waveOffset, oceanY + 5, 20, Math.PI, 0); ctx.fill(); }
+      for (let x = -60; x < w + 60; x += 60) {
+        ctx.beginPath();
+        ctx.arc(x + waveOffset, oceanY + 5, 20, Math.PI, 0);
+        ctx.fill();
+      }
+
+      // Parallax Sailboats on Ocean
       oceanSails.forEach(s => {
         s.x -= s.speed * (speed * 0.1 + 0.2);
         if (s.x < -100) s.x = w + 100;
-        const sy = oceanY + 15; ctx.save(); ctx.translate(s.x, sy); ctx.scale(s.scale, s.scale);
-        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(15, 0); ctx.lineTo(10, 8); ctx.lineTo(-10, 8); ctx.closePath(); ctx.fill();
+
+        const sy = oceanY + 15;
+        ctx.save();
+        ctx.translate(s.x, sy);
+        ctx.scale(s.scale, s.scale);
+        
+        // Hull
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(-15, 0);
+        ctx.lineTo(15, 0);
+        ctx.lineTo(10, 8);
+        ctx.lineTo(-10, 8);
+        ctx.closePath();
+        ctx.fill();
+
+        // Sail
         ctx.fillStyle = state.env === 'cyber' ? '#ec4899' : '#f43f5e';
-        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -22); ctx.lineTo(12, -4); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -22);
+        ctx.lineTo(12, -4);
+        ctx.closePath();
+        ctx.fill();
         ctx.restore();
       });
+
+      // Parallax Palm Trees Background
       backgroundPalms.forEach(p => {
         p.x -= speed * dt * 25 * p.scale;
         if (p.x < -100) p.x = w + 100;
-        const py = oceanY + 10; ctx.save(); ctx.translate(p.x, py); ctx.scale(p.scale, p.scale);
-        ctx.strokeStyle = state.env === 'cyber' ? '#818cf8' : '#78350f'; ctx.lineWidth = 8;
-        ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(10, -40, -5, -80); ctx.stroke();
+
+        const py = oceanY + 10;
+        ctx.save();
+        ctx.translate(p.x, py);
+        ctx.scale(p.scale, p.scale);
+
+        // Trunk
+        ctx.strokeStyle = state.env === 'cyber' ? '#818cf8' : '#78350f';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(10, -40, -5, -80);
+        ctx.stroke();
+
+        // Leaves
         ctx.fillStyle = state.env === 'cyber' ? '#06b6d4' : '#15803d';
         for (let a = 0; a < 5; a++) {
           const angle = (a * Math.PI) / 2.5 - Math.PI / 2;
-          ctx.beginPath(); ctx.ellipse(-5 + Math.cos(angle) * 20, -80 + Math.sin(angle) * 15, 25, 8, angle, 0, Math.PI * 2);
+          ctx.beginPath();
+          ctx.ellipse(-5 + Math.cos(angle) * 20, -80 + Math.sin(angle) * 15, 25, 8, angle, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.restore();
+
       });
-      ctx.fillStyle = roadColor; ctx.fillRect(0, groundY, w, h - groundY);
-      ctx.strokeStyle = plankColor; ctx.lineWidth = 4;
-      const plankSpacing = 40; const offset = (performance.now() * 0.05 * speed) % plankSpacing;
+
+      // Coastal Boardwalk / Highway
+      ctx.fillStyle = roadColor;
+      ctx.fillRect(0, groundY, w, h - groundY);
+
+      // Boardwalk Planks / Moving Dashed lines
+      ctx.strokeStyle = plankColor;
+      ctx.lineWidth = 4;
+
+      const plankSpacing = 40;
+      const offset = (performance.now() * 0.05 * speed) % plankSpacing;
+
       for (let x = -plankSpacing; x < w + plankSpacing; x += plankSpacing) {
-        ctx.beginPath(); ctx.moveTo(x - offset, groundY); ctx.lineTo(x - offset, h); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x - offset, groundY);
+        ctx.lineTo(x - offset, h);
+        ctx.stroke();
       }
-      ctx.fillStyle = state.env === 'cyber' ? '#38bdf8' : '#b45309'; ctx.fillRect(0, groundY - 8, w, 8);
+
+      // Top Railing of Boardwalk
+      ctx.fillStyle = state.env === 'cyber' ? '#38bdf8' : '#b45309';
+      ctx.fillRect(0, groundY - 8, w, 8);
+
+      // Rain Particles Effect
       if (state.env === 'rain') {
-        ctx.strokeStyle = 'rgba(224, 242, 254, 0.4)'; ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(224, 242, 254, 0.4)';
+        ctx.lineWidth = 1.5;
         for (let r = 0; r < 40; r++) {
-          const rx = (r * 37 + performance.now() * 0.8) % w; const ry = (r * 53 + performance.now() * 1.5) % h;
-          ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 4, ry + 15); ctx.stroke();
+          const rx = (r * 37 + performance.now() * 0.8) % w;
+          const ry = (r * 53 + performance.now() * 1.5) % h;
+          ctx.beginPath();
+          ctx.moveTo(rx, ry);
+          ctx.lineTo(rx - 4, ry + 15);
+          ctx.stroke();
         }
       }
     }
+
+    // Draw Detailed Animated Pelican Character & Bicycle
     function drawPelicanBicycle() {
-      const bikeX = canvas.width * 0.38; const groundY = canvas.height * 0.75; const bikeY = groundY - 30 + state.bikeYOffset;
-      ctx.save(); ctx.translate(bikeX, bikeY);
-      if (state.wheelieAngle !== 0) { ctx.translate(-80, 0); ctx.rotate(-state.wheelieAngle); ctx.translate(80, 0); }
-      const rearWheelPos = { x: -80, y: 0 }; const frontWheelPos = { x: 80, y: 0 };
-      const crankPos = { x: 0, y: -5 }; const seatPos = { x: -35, y: -85 };
-      const headTubePos = { x: 55, y: -85 }; const handlePos = { x: 50, y: -115 };
+      const bikeX = canvas.width * 0.38;
+      const groundY = canvas.height * 0.75;
+      const bikeY = groundY - 30 + state.bikeYOffset;
+
+      ctx.save();
+      ctx.translate(bikeX, bikeY);
+
+      // Apply Wheelie Tilt Rotation around Rear Wheel Hub (-80, 0)
+      if (state.wheelieAngle !== 0) {
+        ctx.translate(-80, 0);
+        ctx.rotate(-state.wheelieAngle);
+        ctx.translate(80, 0);
+      }
+
+      // Bicycle Geometry
+      const rearWheelPos = { x: -80, y: 0 };
+      const frontWheelPos = { x: 80, y: 0 };
+      const crankPos = { x: 0, y: -5 };
+      const seatPos = { x: -35, y: -85 };
+      const headTubePos = { x: 55, y: -85 };
+      const handlePos = { x: 50, y: -115 };
       const wheelRadius = 38;
+
+      // Draw Wheels
       [rearWheelPos, frontWheelPos].forEach(pos => {
-        ctx.save(); ctx.translate(pos.x, pos.y);
-        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(0, 0, wheelRadius, 0, Math.PI * 2); ctx.stroke();
-        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, wheelRadius - 4, 0, Math.PI * 2); ctx.stroke();
-        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
-        for (let i = 0; i < 12; i++) { const spokeAngle = state.wheelAngle + (i * Math.PI * 2) / 12; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(spokeAngle) * (wheelRadius - 4), Math.sin(spokeAngle) * (wheelRadius - 4)); ctx.stroke(); }
-        ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2); ctx.fill();
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+
+        // Tire Rim
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.arc(0, 0, wheelRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner Metallic Hub
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, wheelRadius - 4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Rotating Spokes
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1.5;
+        const numSpokes = 12;
+        for (let i = 0; i < numSpokes; i++) {
+          const spokeAngle = state.wheelAngle + (i * Math.PI * 2) / numSpokes;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(spokeAngle) * (wheelRadius - 4), Math.sin(spokeAngle) * (wheelRadius - 4));
+          ctx.stroke();
+        }
+
+        // Center Axle Cap
+        ctx.fillStyle = '#64748b';
+        ctx.beginPath();
+        ctx.arc(0, 0, 7, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.restore();
       });
-      const frameGradient = ctx.createLinearGradient(-80, -100, 80, 0); frameGradient.addColorStop(0, state.bikeColor); frameGradient.addColorStop(1, '#ffffff');
-      ctx.strokeStyle = state.bikeColor; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      ctx.beginPath(); ctx.moveTo(rearWheelPos.x, rearWheelPos.y); ctx.lineTo(crankPos.x, crankPos.y); ctx.lineTo(seatPos.x, seatPos.y); ctx.lineTo(rearWheelPos.x, rearWheelPos.y);
-      ctx.moveTo(crankPos.x, crankPos.y); ctx.lineTo(headTubePos.x, headTubePos.y); ctx.moveTo(seatPos.x, seatPos.y); ctx.lineTo(headTubePos.x, headTubePos.y);
-      ctx.moveTo(crankPos.x, crankPos.y); ctx.lineTo(seatPos.x, seatPos.y); ctx.moveTo(headTubePos.x, headTubePos.y); ctx.lineTo(frontWheelPos.x, frontWheelPos.y);
-      ctx.moveTo(headTubePos.x, headTubePos.y); ctx.lineTo(handlePos.x, handlePos.y); ctx.stroke();
-      ctx.strokeStyle = '#334155'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(handlePos.x - 10, handlePos.y); ctx.lineTo(handlePos.x + 15, handlePos.y); ctx.stroke();
-      ctx.lineWidth = 2; const streamerColors = ['#f43f5e', '#38bdf8', '#f59e0b', '#10b981'];
+
+      // Frame Color Gradient
+      const frameGradient = ctx.createLinearGradient(-80, -100, 80, 0);
+      frameGradient.addColorStop(0, state.bikeColor);
+      frameGradient.addColorStop(1, '#ffffff');
+
+      ctx.strokeStyle = state.bikeColor;
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Bike Frame Tubes
+      ctx.beginPath();
+      // Chainstay
+      ctx.moveTo(rearWheelPos.x, rearWheelPos.y);
+      ctx.lineTo(crankPos.x, crankPos.y);
+      // Seatstay
+      ctx.lineTo(seatPos.x, seatPos.y);
+      ctx.lineTo(rearWheelPos.x, rearWheelPos.y);
+      // Downtube
+      ctx.moveTo(crankPos.x, crankPos.y);
+      ctx.lineTo(headTubePos.x, headTubePos.y);
+      // Top Tube
+      ctx.moveTo(seatPos.x, seatPos.y);
+      ctx.lineTo(headTubePos.x, headTubePos.y);
+      // Seat Post Extension
+      ctx.moveTo(crankPos.x, crankPos.y);
+      ctx.lineTo(seatPos.x, seatPos.y);
+      // Front Fork
+      ctx.moveTo(headTubePos.x, headTubePos.y);
+      ctx.lineTo(frontWheelPos.x, frontWheelPos.y);
+      // Handlebar stem
+      ctx.moveTo(headTubePos.x, headTubePos.y);
+      ctx.lineTo(handlePos.x, handlePos.y);
+      ctx.stroke();
+
+      // Handlebars & Grips
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.moveTo(handlePos.x - 10, handlePos.y);
+      ctx.lineTo(handlePos.x + 15, handlePos.y);
+      ctx.stroke();
+
+      // Handlebar Streamers fluttering in wind
+      ctx.lineWidth = 2;
+      const streamerColors = ['#f43f5e', '#38bdf8', '#f59e0b', '#10b981'];
       streamerColors.forEach((col, idx) => {
-        ctx.strokeStyle = col; ctx.beginPath(); ctx.moveTo(handlePos.x + 15, handlePos.y);
+        ctx.strokeStyle = col;
+        ctx.beginPath();
+        ctx.moveTo(handlePos.x + 15, handlePos.y);
         const waviness = Math.sin(performance.now() * 0.01 + idx) * 8;
-        ctx.quadraticCurveTo(handlePos.x + 30, handlePos.y + waviness, handlePos.x + 45 + idx * 4, handlePos.y + waviness * 1.5); ctx.stroke();
+        ctx.quadraticCurveTo(handlePos.x + 30, handlePos.y + waviness, handlePos.x + 45 + idx * 4, handlePos.y + waviness * 1.5);
+        ctx.stroke();
       });
-      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.ellipse(seatPos.x - 2, seatPos.y - 4, 18, 7, -0.1, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#d97706'; ctx.fillRect(handlePos.x + 5, handlePos.y, 28, 22); ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2; ctx.strokeRect(handlePos.x + 5, handlePos.y, 28, 22);
-      if (state.basketItem === 'fish') { ctx.font = '16px sans-serif'; ctx.fillText('🐟', handlePos.x + 8, handlePos.y + 16); }
-      else if (state.basketItem === 'flowers') { ctx.font = '16px sans-serif'; ctx.fillText('🌺', handlePos.x + 8, handlePos.y + 16); }
-      else if (state.basketItem === 'boombox') { ctx.font = '16px sans-serif'; ctx.fillText('📻', handlePos.x + 8, handlePos.y + 16); }
+
+      // Bike Seat Saddle
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.ellipse(seatPos.x - 2, seatPos.y - 4, 18, 7, -0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Front Basket & Contents
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(handlePos.x + 5, handlePos.y, 28, 22);
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(handlePos.x + 5, handlePos.y, 28, 22);
+
+      // Render Basket Items
+      if (state.basketItem === 'fish') {
+        ctx.font = '16px sans-serif';
+        ctx.fillText('🐟', handlePos.x + 8, handlePos.y + 16);
+      } else if (state.basketItem === 'flowers') {
+        ctx.font = '16px sans-serif';
+        ctx.fillText('🌺', handlePos.x + 8, handlePos.y + 16);
+      } else if (state.basketItem === 'boombox') {
+        ctx.font = '16px sans-serif';
+        ctx.fillText('📻', handlePos.x + 8, handlePos.y + 16);
+      }
+
+      // Pedal Crank Mechanism
       const crankRadius = 18;
-      const pedalLeftX = crankPos.x + Math.cos(state.crankAngle) * crankRadius; const pedalLeftY = crankPos.y + Math.sin(state.crankAngle) * crankRadius;
-      const pedalRightX = crankPos.x + Math.cos(state.crankAngle + Math.PI) * crankRadius; const pedalRightY = crankPos.y + Math.sin(state.crankAngle + Math.PI) * crankRadius;
-      ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.arc(crankPos.x, crankPos.y, 14, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#475569'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(crankPos.x, crankPos.y); ctx.lineTo(pedalLeftX, pedalLeftY); ctx.moveTo(crankPos.x, crankPos.y); ctx.lineTo(pedalRightX, pedalRightY); ctx.stroke();
-      ctx.fillStyle = '#1e293b'; ctx.fillRect(pedalLeftX - 7, pedalLeftY - 3, 14, 6);
-      const hipX = seatPos.x + 8; const hipY = seatPos.y - 12;
+      const pedalLeftX = crankPos.x + Math.cos(state.crankAngle) * crankRadius;
+      const pedalLeftY = crankPos.y + Math.sin(state.crankAngle) * crankRadius;
+      const pedalRightX = crankPos.x + Math.cos(state.crankAngle + Math.PI) * crankRadius;
+      const pedalRightY = crankPos.y + Math.sin(state.crankAngle + Math.PI) * crankRadius;
+
+      // Draw Chainring
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(crankPos.x, crankPos.y, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Crank arms
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(crankPos.x, crankPos.y);
+      ctx.lineTo(pedalLeftX, pedalLeftY);
+      ctx.moveTo(crankPos.x, crankPos.y);
+      ctx.lineTo(pedalRightX, pedalRightY);
+      ctx.stroke();
+
+      // Left (Far) Pedal
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(pedalLeftX - 7, pedalLeftY - 3, 14, 6);
+
+      // --- PELICAN CHARACTER DRAWING ---
+      const hipX = seatPos.x + 8;
+      const hipY = seatPos.y - 12;
+
+      // Left Leg IK Calculation (Far Leg)
       const legLeftIK = solve2LinkIK(hipX, hipY, pedalLeftX, pedalLeftY, 32, 28, -1);
-      ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(hipX, hipY); ctx.lineTo(legLeftIK.kx, legLeftIK.ky); ctx.lineTo(pedalLeftX, pedalLeftY); ctx.stroke();
-      const bodyX = seatPos.x + 5; const bodyY = seatPos.y - 45;
-      ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.moveTo(bodyX - 25, bodyY - 10); ctx.lineTo(bodyX - 45, bodyY - 25 + Math.sin(performance.now() * 0.01) * 3); ctx.lineTo(bodyX - 35, bodyY + 5); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.ellipse(bodyX, bodyY, 28, 22, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = '#06b6d4'; ctx.beginPath(); ctx.ellipse(bodyX + 2, bodyY + 2, 22, 17, -0.2, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#fef08a'; for (let fp = -10; fp <= 10; fp += 10) { ctx.beginPath(); ctx.arc(bodyX + fp, bodyY + (fp % 15), 3, 0, Math.PI * 2); ctx.fill(); }
-      const neckBaseX = bodyX + 18; const neckBaseY = bodyY - 10; const headX = neckBaseX + 15; const headY = neckBaseY - 55 + Math.sin(state.crankAngle * 2) * 2;
-      ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 22; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(neckBaseX, neckBaseY); ctx.quadraticCurveTo(neckBaseX + 25, neckBaseY - 25, headX, headY); ctx.stroke();
-      ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(headX, headY, 18, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(headX - 10, headY - 12); ctx.quadraticCurveTo(headX - 25, headY - 25, headX - 18, headY - 5); ctx.fill();
-      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(headX + 6, headY - 5, 4, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(headX + 7.5, headY - 6.5, 1.5, 0, Math.PI * 2); ctx.fill();
-      const beakBaseX = headX + 10; const beakBaseY = headY + 2;
-      ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.moveTo(beakBaseX, beakBaseY - 8); ctx.lineTo(beakBaseX + 65, beakBaseY + 8); ctx.lineTo(beakBaseX + 62, beakBaseY + 12); ctx.lineTo(beakBaseX, beakBaseY + 2); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#d97706'; ctx.lineWidth = 1.5; ctx.stroke();
-      const pouchSpread = state.beakOpen * 35; ctx.fillStyle = '#fb923c'; ctx.beginPath(); ctx.moveTo(beakBaseX - 2, beakBaseY + 2); ctx.quadraticCurveTo(beakBaseX + 30, beakBaseY + 18 + pouchSpread, beakBaseX + 62, beakBaseY + 10); ctx.lineTo(beakBaseX, beakBaseY + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
-      if (state.hat === 'sunglasses') { ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.roundRect(headX + 2, headY - 10, 16, 10, 3); ctx.fill(); ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.beginPath(); ctx.moveTo(headX, headY - 6); ctx.lineTo(headX + 2, headY - 6); ctx.stroke(); }
-      else if (state.hat === 'captain') { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(headX, headY - 20, 18, 7, -0.1, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#0f172a'; ctx.fillRect(headX - 14, headY - 18, 28, 6); ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(headX + 10, headY - 14, 12, Math.PI, 0); ctx.fill(); }
-      else if (state.hat === 'party') { ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.moveTo(headX - 10, headY - 16); ctx.lineTo(headX + 5, headY - 42); ctx.lineTo(headX + 12, headY - 16); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(headX + 5, headY - 42, 5, 0, Math.PI * 2); ctx.fill(); }
-      else if (state.hat === 'straw') { ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.ellipse(headX, headY - 18, 26, 6, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(headX, headY - 22, 12, Math.PI, 0); ctx.fill(); }
+      ctx.strokeStyle = '#f59e0b'; // Pelican leg yellow/orange
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(hipX, hipY);
+      ctx.lineTo(legLeftIK.kx, legLeftIK.ky);
+      ctx.lineTo(pedalLeftX, pedalLeftY);
+      ctx.stroke();
+
+      // Pelican Body (Chubby Cute Torso)
+      const bodyX = seatPos.x + 5;
+      const bodyY = seatPos.y - 45;
+
+      // Tail Feathers
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.moveTo(bodyX - 25, bodyY - 10);
+      ctx.lineTo(bodyX - 45, bodyY - 25 + Math.sin(performance.now() * 0.01) * 3);
+      ctx.lineTo(bodyX - 35, bodyY + 5);
+      ctx.closePath();
+      ctx.fill();
+
+      // Main Torso Fill
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.ellipse(bodyX, bodyY, 28, 22, -0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Hawaiian Shirt Option / Outfit
+      ctx.fillStyle = '#06b6d4'; // Tropical Cyan Shirt
+      ctx.beginPath();
+      ctx.ellipse(bodyX + 2, bodyY + 2, 22, 17, -0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Floral Shirt Pattern
+      ctx.fillStyle = '#fef08a';
+      for (let fp = -10; fp <= 10; fp += 10) {
+        ctx.beginPath();
+        ctx.arc(bodyX + fp, bodyY + (fp % 15), 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Curved Pelican S-Neck & Head
+      const neckBaseX = bodyX + 18;
+      const neckBaseY = bodyY - 10;
+      const headX = neckBaseX + 15;
+      const headY = neckBaseY - 55 + Math.sin(state.crankAngle * 2) * 2; // Head bobbing
+
+      ctx.strokeStyle = '#f8fafc';
+      ctx.lineWidth = 22;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(neckBaseX, neckBaseY);
+      ctx.quadraticCurveTo(neckBaseX + 25, neckBaseY - 25, headX, headY);
+      ctx.stroke();
+
+      // Head Base Feather Ball
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(headX, headY, 18, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Crest Feather Tuft
+      ctx.beginPath();
+      ctx.moveTo(headX - 10, headY - 12);
+      ctx.quadraticCurveTo(headX - 25, headY - 25, headX - 18, headY - 5);
+      ctx.fill();
+
+      // Expressive Eye
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(headX + 6, headY - 5, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye Reflection Glint
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(headX + 7.5, headY - 6.5, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // BEAK & POUCH MECHANISM
+      const beakBaseX = headX + 10;
+      const beakBaseY = headY + 2;
+
+      // Upper Rigid Beak
+      ctx.fillStyle = '#f59e0b'; // Golden Orange Beak
+      ctx.beginPath();
+      ctx.moveTo(beakBaseX, beakBaseY - 8);
+      ctx.lineTo(beakBaseX + 65, beakBaseY + 8); // Long Beak Hook
+      ctx.lineTo(beakBaseX + 62, beakBaseY + 12);
+      ctx.lineTo(beakBaseX, beakBaseY + 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Lower Elastic Beak Pouch (Animates open on click / space)
+      const pouchSpread = state.beakOpen * 35;
+      ctx.fillStyle = '#fb923c'; // Soft Orange Pouch
+      ctx.beginPath();
+      ctx.moveTo(beakBaseX - 2, beakBaseY + 2);
+      ctx.quadraticCurveTo(beakBaseX + 30, beakBaseY + 18 + pouchSpread, beakBaseX + 62, beakBaseY + 10);
+      ctx.lineTo(beakBaseX, beakBaseY + 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Accessories / Hats on Pelican Head
+      if (state.hat === 'sunglasses') {
+        // Cool Aviators
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(headX + 2, headY - 10, 16, 10, 3);
+        ctx.fill();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        // Frame bridge
+        ctx.beginPath();
+        ctx.moveTo(headX, headY - 6);
+        ctx.lineTo(headX + 2, headY - 6);
+        ctx.stroke();
+      } else if (state.hat === 'captain') {
+        // Captain Hat
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(headX, headY - 20, 18, 7, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(headX - 14, headY - 18, 28, 6);
+        // Visor
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.arc(headX + 10, headY - 14, 12, Math.PI, 0);
+        ctx.fill();
+      } else if (state.hat === 'party') {
+        // Party Hat
+        ctx.fillStyle = '#ec4899';
+        ctx.beginPath();
+        ctx.moveTo(headX - 10, headY - 16);
+        ctx.lineTo(headX + 5, headY - 42);
+        ctx.lineTo(headX + 12, headY - 16);
+        ctx.closePath();
+        ctx.fill();
+        // Pom pom on top
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(headX + 5, headY - 42, 5, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (state.hat === 'straw') {
+        // Beach Straw Hat
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.ellipse(headX, headY - 18, 26, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(headX, headY - 22, 12, Math.PI, 0);
+        ctx.fill();
+      }
+
+      // Right Leg IK Calculation (Near Leg)
       const legRightIK = solve2LinkIK(hipX, hipY, pedalRightX, pedalRightY, 32, 28, -1);
-      ctx.strokeStyle = '#ea580c'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(hipX, hipY); ctx.lineTo(legRightIK.kx, legRightIK.ky); ctx.lineTo(pedalRightX, pedalRightY); ctx.stroke();
-      ctx.fillStyle = '#0f172a'; ctx.fillRect(pedalRightX - 8, pedalRightY - 4, 16, 7);
-      const wingBaseX = bodyX + 8; const wingBaseY = bodyY - 8;
-      ctx.fillStyle = '#f1f5f9'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(wingBaseX, wingBaseY); ctx.quadraticCurveTo(wingBaseX + 25, wingBaseY - 15, handlePos.x + 5, handlePos.y - 2); ctx.quadraticCurveTo(wingBaseX + 15, wingBaseY + 15, wingBaseX, wingBaseY); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = '#ea580c';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(hipX, hipY);
+      ctx.lineTo(legRightIK.kx, legRightIK.ky);
+      ctx.lineTo(pedalRightX, pedalRightY);
+      ctx.stroke();
+
+      // Right (Near) Pedal
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(pedalRightX - 8, pedalRightY - 4, 16, 7);
+
+      // Wing Holding Handlebars
+      const wingBaseX = bodyX + 8;
+      const wingBaseY = bodyY - 8;
+      
+      ctx.fillStyle = '#f1f5f9';
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(wingBaseX, wingBaseY);
+      ctx.quadraticCurveTo(wingBaseX + 25, wingBaseY - 15, handlePos.x + 5, handlePos.y - 2);
+      ctx.quadraticCurveTo(wingBaseX + 15, wingBaseY + 15, wingBaseX, wingBaseY);
+      ctx.fill();
+      ctx.stroke();
+
       ctx.restore();
     }
+
+    // Render Entities (Flying Fish) & Particles
     function drawEntitiesAndParticles(dt) {
+      // 1. Draw Flying Fish
       flyingFish.forEach((f, idx) => {
-        f.x += f.vx; f.y = f.baseY + Math.sin(performance.now() * 0.005 + f.phase) * 20;
-        if (f.x < -60 || f.caught) { flyingFish.splice(idx, 1); return; }
-        ctx.save(); ctx.translate(f.x, f.y);
-        ctx.fillStyle = f.isGolden ? '#f59e0b' : '#0284c7'; ctx.beginPath(); ctx.ellipse(0, 0, f.size, f.size * 0.55, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(f.size * 0.8, 0); ctx.lineTo(f.size * 1.4, -f.size * 0.5); ctx.lineTo(f.size * 1.4, f.size * 0.5); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = f.isGolden ? '#fef08a' : '#7dd3fc'; ctx.beginPath(); ctx.moveTo(-f.size * 0.2, -f.size * 0.2); ctx.lineTo(-f.size * 0.8, -f.size * 1.2); ctx.lineTo(f.size * 0.2, -f.size * 0.4); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(-f.size * 0.4, -f.size * 0.1, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(-f.size * 0.4, -f.size * 0.1, 1.5, 0, Math.PI * 2); ctx.fill();
+        f.x += f.vx;
+        f.y = f.baseY + Math.sin(performance.now() * 0.005 + f.phase) * 20;
+
+        if (f.x < -60 || f.caught) {
+          flyingFish.splice(idx, 1);
+          return;
+        }
+
+        ctx.save();
+        ctx.translate(f.x, f.y);
+
+        // Fish Body
+        ctx.fillStyle = f.isGolden ? '#f59e0b' : '#0284c7';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, f.size, f.size * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fish Tail
+        ctx.beginPath();
+        ctx.moveTo(f.size * 0.8, 0);
+        ctx.lineTo(f.size * 1.4, -f.size * 0.5);
+        ctx.lineTo(f.size * 1.4, f.size * 0.5);
+        ctx.closePath();
+        ctx.fill();
+
+        // Wing Fins
+        ctx.fillStyle = f.isGolden ? '#fef08a' : '#7dd3fc';
+        ctx.beginPath();
+        ctx.moveTo(-f.size * 0.2, -f.size * 0.2);
+        ctx.lineTo(-f.size * 0.8, -f.size * 1.2);
+        ctx.lineTo(f.size * 0.2, -f.size * 0.4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Eye
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-f.size * 0.4, -f.size * 0.1, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(-f.size * 0.4, -f.size * 0.1, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.restore();
       });
+
+      // 2. Draw Particles
       particles.forEach((p, idx) => {
-        p.x += p.vx; p.y += p.vy; p.alpha -= dt * 1.2;
-        if (p.alpha <= 0) { particles.splice(idx, 1); return; }
-        ctx.save(); ctx.globalAlpha = Math.max(p.alpha, 0);
-        if (p.type === 'bubbles') { ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.stroke(); }
-        else if (p.type === 'rainbow') { const colors = ['#f43f5e', '#f59e0b', '#10b981', '#38bdf8', '#8b5cf6']; ctx.fillStyle = colors[Math.floor(p.x) % colors.length]; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2); ctx.fill(); }
-        else if (p.type === 'hearts') { ctx.font = `${Math.round(p.size * 1.5)}px sans-serif`; ctx.fillText('💖', p.x, p.y); }
-        else if (p.type === 'stars') { ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2); ctx.fill(); }
-        else if (p.type === 'sparkle') { ctx.fillStyle = p.color || '#38bdf8'; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }
-        else if (p.type === 'bellWave') { ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, -Math.PI / 3, Math.PI / 3); ctx.stroke(); }
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= dt * 1.2;
+
+        if (p.alpha <= 0) {
+          particles.splice(idx, 1);
+          return;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(p.alpha, 0);
+
+        if (p.type === 'bubbles') {
+          ctx.strokeStyle = '#7dd3fc';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (p.type === 'rainbow') {
+          const colors = ['#f43f5e', '#f59e0b', '#10b981', '#38bdf8', '#8b5cf6'];
+          ctx.fillStyle = colors[Math.floor(p.x) % colors.length];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === 'hearts') {
+          ctx.font = `${Math.round(p.size * 1.5)}px sans-serif`;
+          ctx.fillText('💖', p.x, p.y);
+        } else if (p.type === 'stars') {
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === 'sparkle') {
+          ctx.fillStyle = p.color || '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === 'bellWave') {
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, -Math.PI / 3, Math.PI / 3);
+          ctx.stroke();
+        }
+
         ctx.restore();
       });
     }
+
+    // Start Main Loop
     requestAnimationFrame(render);
+
+    // KEYBOARD EVENT LISTENERS
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') { e.preventDefault(); triggerBeak(); } else if (e.code === 'KeyB') { triggerBell(); }
-      else if (e.code === 'KeyW' || e.code === 'ArrowUp') { triggerWheelie(); } else if (e.code === 'KeyJ') { triggerJump(); }
-      else if (e.code === 'KeyS') { triggerSquawk(); } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { state.turbo = true; }
+      if (e.code === 'Space') {
+        e.preventDefault();
+        triggerBeak();
+      } else if (e.code === 'KeyB') {
+        triggerBell();
+      } else if (e.code === 'KeyW' || e.code === 'ArrowUp') {
+        triggerWheelie();
+      } else if (e.code === 'KeyJ') {
+        triggerJump();
+      } else if (e.code === 'KeyS') {
+        triggerSquawk();
+      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        state.turbo = true;
+      }
     });
-    window.addEventListener('keyup', (e) => { if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { state.turbo = false; } });
-    canvas.addEventListener('pointerdown', () => { triggerBeak(); });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        state.turbo = false;
+      }
+    });
+
+    // CANVAS CLICK / TOUCH INTERACTION
+    canvas.addEventListener('pointerdown', (e) => {
+      // Trigger beak snap when tapping canvas!
+      triggerBeak();
+    });
+
+    // UI BUTTON BINDINGS
     document.getElementById('beakBtn').addEventListener('click', triggerBeak);
     document.getElementById('bellBtn').addEventListener('click', triggerBell);
     document.getElementById('wheelieBtn').addEventListener('click', triggerWheelie);
     document.getElementById('jumpBtn').addEventListener('click', triggerJump);
     document.getElementById('squawkBtn').addEventListener('click', triggerSquawk);
+
+    // Speed Slider
     const speedSlider = document.getElementById('speedSlider');
-    speedSlider.addEventListener('input', (e) => { state.speed = parseFloat(e.target.value); });
+    speedSlider.addEventListener('input', (e) => {
+      state.speed = parseFloat(e.target.value);
+    });
+
+    // Turbo Button Hold
     const turboBtn = document.getElementById('turboBtn');
-    ['pointerdown', 'touchstart'].forEach(evt => { turboBtn.addEventListener(evt, (e) => { e.preventDefault(); state.turbo = true; }); });
-    ['pointerup', 'pointerleave', 'touchend'].forEach(evt => { turboBtn.addEventListener(evt, () => { state.turbo = false; }); });
-    const audioBtn = document.getElementById('audioBtn'); const audioIcon = document.getElementById('audioIcon');
-    audioBtn.addEventListener('click', () => { sound.muted = !sound.muted; if (sound.muted) { audioIcon.setAttribute('data-lucide', 'volume-x'); } else { audioIcon.setAttribute('data-lucide', 'volume-2'); sound.playBell(); } lucide.createIcons(); });
-    const customizerModal = document.getElementById('customizerModal'); const customizerDrawer = document.getElementById('customizerDrawer');
-    const openCustomizerBtn = document.getElementById('openCustomizerBtn'); const closeCustomizerBtn = document.getElementById('closeCustomizerBtn'); const closeCustomizerBackdrop = document.getElementById('closeCustomizerBackdrop');
-    function openCustomizer() { customizerModal.classList.remove('opacity-0', 'pointer-events-none'); customizerDrawer.classList.remove('translate-x-full'); }
-    function closeCustomizer() { customizerModal.classList.add('opacity-0', 'pointer-events-none'); customizerDrawer.classList.add('translate-x-full'); }
-    openCustomizerBtn.addEventListener('click', openCustomizer); closeCustomizerBtn.addEventListener('click', closeCustomizer); closeCustomizerBackdrop.addEventListener('click', closeCustomizer);
-    document.querySelectorAll('.hat-opt').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.hat-opt').forEach(b => { b.classList.remove('border-amber-400', 'bg-amber-400/20'); b.classList.add('border-transparent'); }); btn.classList.add('border-amber-400', 'bg-amber-400/20'); state.hat = btn.getAttribute('data-hat'); }); });
-    document.querySelectorAll('.color-opt').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.color-opt').forEach(b => { b.classList.remove('ring-white', 'scale-110'); b.classList.add('ring-transparent'); }); btn.classList.add('ring-white', 'scale-110'); state.bikeColor = btn.getAttribute('data-color'); }); });
-    document.querySelectorAll('.basket-opt').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.basket-opt').forEach(b => { b.classList.remove('border-amber-400', 'bg-amber-400/20'); b.classList.add('border-transparent'); }); btn.classList.add('border-amber-400', 'bg-amber-400/20'); state.basketItem = btn.getAttribute('data-basket'); }); });
-    document.querySelectorAll('.trail-opt').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.trail-opt').forEach(b => { b.classList.remove('border-amber-400', 'bg-amber-400/20'); b.classList.add('border-transparent'); }); btn.classList.add('border-amber-400', 'bg-amber-400/20'); state.trailType = btn.getAttribute('data-trail'); }); });
-    const envModal = document.getElementById('envModal'); const openEnvBtn = document.getElementById('openEnvBtn'); const closeEnvBtn = document.getElementById('closeEnvBtn'); const closeEnvBackdrop = document.getElementById('closeEnvBackdrop');
-    function openEnv() { envModal.classList.remove('opacity-0', 'pointer-events-none'); }
-    function closeEnv() { envModal.classList.add('opacity-0', 'pointer-events-none'); }
-    openEnvBtn.addEventListener('click', openEnv); closeEnvBtn.addEventListener('click', closeEnv); closeEnvBackdrop.addEventListener('click', closeEnv);
-    document.querySelectorAll('.env-preset-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.env-preset-btn').forEach(b => { b.classList.remove('border-amber-400', 'bg-amber-400/10'); b.classList.add('border-transparent'); }); btn.classList.add('border-amber-400', 'bg-amber-400/10'); state.env = btn.getAttribute('data-env'); closeEnv(); }); });
-    const controlsModal = document.getElementById('controlsModal'); const openControlsBtn = document.getElementById('openControlsBtn'); const closeControlsBtn = document.getElementById('closeControlsBtn'); const closeControlsBackdrop = document.getElementById('closeControlsBackdrop');
-    function openControls() { controlsModal.classList.remove('opacity-0', 'pointer-events-none'); }
-    function closeControls() { controlsModal.classList.add('opacity-0', 'pointer-events-none'); }
-    openControlsBtn.addEventListener('click', openControls); closeControlsBtn.addEventListener('click', closeControls); closeControlsBackdrop.addEventListener('click', closeControls);
-    const modeToggleBtn = document.getElementById('modeToggleBtn'); const scoreBadge = document.getElementById('scoreBadge'); const modeText = document.getElementById('modeText'); const gameOverlay = document.getElementById('gameOverlay'); const restartGameBtn = document.getElementById('restartGameBtn');
+    ['pointerdown', 'touchstart'].forEach(evt => {
+      turboBtn.addEventListener(evt, (e) => {
+        e.preventDefault();
+        state.turbo = true;
+      });
+    });
+    ['pointerup', 'pointerleave', 'touchend'].forEach(evt => {
+      turboBtn.addEventListener(evt, () => {
+        state.turbo = false;
+      });
+    });
+
+    // Audio Mute Toggle
+    const audioBtn = document.getElementById('audioBtn');
+    const audioIcon = document.getElementById('audioIcon');
+    audioBtn.addEventListener('click', () => {
+      sound.muted = !sound.muted;
+      if (sound.muted) {
+        audioIcon.setAttribute('data-lucide', 'volume-x');
+      } else {
+        audioIcon.setAttribute('data-lucide', 'volume-2');
+        sound.playBell();
+      }
+      lucide.createIcons();
+    });
+
+    // Customizer Drawer Logic
+    const customizerModal = document.getElementById('customizerModal');
+    const customizerDrawer = document.getElementById('customizerDrawer');
+    const openCustomizerBtn = document.getElementById('openCustomizerBtn');
+    const closeCustomizerBtn = document.getElementById('closeCustomizerBtn');
+    const closeCustomizerBackdrop = document.getElementById('closeCustomizerBackdrop');
+
+    function openCustomizer() {
+      customizerModal.classList.remove('opacity-0', 'pointer-events-none');
+      customizerDrawer.classList.remove('translate-x-full');
+    }
+    function closeCustomizer() {
+      customizerModal.classList.add('opacity-0', 'pointer-events-none');
+      customizerDrawer.classList.add('translate-x-full');
+    }
+
+    openCustomizerBtn.addEventListener('click', openCustomizer);
+    closeCustomizerBtn.addEventListener('click', closeCustomizer);
+    closeCustomizerBackdrop.addEventListener('click', closeCustomizer);
+
+    // Hat Options
+    document.querySelectorAll('.hat-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.hat-opt').forEach(b => {
+          b.classList.remove('border-amber-400', 'bg-amber-400/20');
+          b.classList.add('border-transparent');
+        });
+        btn.classList.add('border-amber-400', 'bg-amber-400/20');
+        state.hat = btn.getAttribute('data-hat');
+      });
+    });
+
+    // Bike Colors
+    document.querySelectorAll('.color-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-opt').forEach(b => {
+          b.classList.remove('ring-white', 'scale-110');
+          b.classList.add('ring-transparent');
+        });
+        btn.classList.add('ring-white', 'scale-110');
+        state.bikeColor = btn.getAttribute('data-color');
+      });
+    });
+
+    // Basket Options
+    document.querySelectorAll('.basket-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.basket-opt').forEach(b => {
+          b.classList.remove('border-amber-400', 'bg-amber-400/20');
+          b.classList.add('border-transparent');
+        });
+        btn.classList.add('border-amber-400', 'bg-amber-400/20');
+        state.basketItem = btn.getAttribute('data-basket');
+      });
+    });
+
+    // Trail Options
+    document.querySelectorAll('.trail-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.trail-opt').forEach(b => {
+          b.classList.remove('border-amber-400', 'bg-amber-400/20');
+          b.classList.add('border-transparent');
+        });
+        btn.classList.add('border-amber-400', 'bg-amber-400/20');
+        state.trailType = btn.getAttribute('data-trail');
+      });
+    });
+
+    // Environment Modal Logic
+    const envModal = document.getElementById('envModal');
+    const openEnvBtn = document.getElementById('openEnvBtn');
+    const closeEnvBtn = document.getElementById('closeEnvBtn');
+    const closeEnvBackdrop = document.getElementById('closeEnvBackdrop');
+
+    function openEnv() {
+      envModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+    function closeEnv() {
+      envModal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    openEnvBtn.addEventListener('click', openEnv);
+    closeEnvBtn.addEventListener('click', closeEnv);
+    closeEnvBackdrop.addEventListener('click', closeEnv);
+
+    document.querySelectorAll('.env-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.env-preset-btn').forEach(b => {
+          b.classList.remove('border-amber-400', 'bg-amber-400/10');
+          b.classList.add('border-transparent');
+        });
+        btn.classList.add('border-amber-400', 'bg-amber-400/10');
+        state.env = btn.getAttribute('data-env');
+        closeEnv();
+      });
+    });
+
+    // Controls Modal Logic
+    const controlsModal = document.getElementById('controlsModal');
+    const openControlsBtn = document.getElementById('openControlsBtn');
+    const closeControlsBtn = document.getElementById('closeControlsBtn');
+    const closeControlsBackdrop = document.getElementById('closeControlsBackdrop');
+
+    function openControls() {
+      controlsModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+    function closeControls() {
+      controlsModal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    openControlsBtn.addEventListener('click', openControls);
+    closeControlsBtn.addEventListener('click', closeControls);
+    closeControlsBackdrop.addEventListener('click', closeControls);
+
+    // Minigame Toggle Logic
+    const modeToggleBtn = document.getElementById('modeToggleBtn');
+    const scoreBadge = document.getElementById('scoreBadge');
+    const modeText = document.getElementById('modeText');
+    const gameOverlay = document.getElementById('gameOverlay');
+    const restartGameBtn = document.getElementById('restartGameBtn');
+
     let gameTimerInterval = null;
+
     function startMinigame() {
-      state.mode = 'minigame'; state.fishCaught = 0; state.gameTimer = 30; state.gameActive = true;
-      scoreBadge.classList.remove('hidden'); modeText.innerText = "Exit Challenge"; document.getElementById('fishCountText').innerText = "0";
+      state.mode = 'minigame';
+      state.fishCaught = 0;
+      state.gameTimer = 30;
+      state.gameActive = true;
+
+      scoreBadge.classList.remove('hidden');
+      modeText.innerText = "Exit Challenge";
+      document.getElementById('fishCountText').innerText = "0";
+
       showToast("Fish Catch Game Started! Snap Beak to Catch Fish!", "🎮");
+
       if (gameTimerInterval) clearInterval(gameTimerInterval);
-      gameTimerInterval = setInterval(() => { if (state.mode !== 'minigame') return; state.gameTimer--; if (state.gameTimer <= 0) { endMinigame(); } }, 1000);
+      gameTimerInterval = setInterval(() => {
+        if (state.mode !== 'minigame') return;
+        state.gameTimer--;
+        if (state.gameTimer <= 0) {
+          endMinigame();
+        }
+      }, 1000);
     }
+
     function endMinigame() {
-      state.gameActive = false; if (gameTimerInterval) clearInterval(gameTimerInterval);
+      state.gameActive = false;
+      if (gameTimerInterval) clearInterval(gameTimerInterval);
+
       document.getElementById('finalScore').innerText = state.fishCaught;
+      
       let rank = "Beach Cruiser";
-      if (state.fishCaught >= 25) rank = "Legendary Pelican"; else if (state.fishCaught >= 15) rank = "Master Fish Catcher"; else if (state.fishCaught >= 5) rank = "Coastal Angler";
+      if (state.fishCaught >= 25) rank = "Legendary Pelican";
+      else if (state.fishCaught >= 15) rank = "Master Fish Catcher";
+      else if (state.fishCaught >= 5) rank = "Coastal Angler";
+
       document.getElementById('rankTitle').innerText = rank;
+
       gameOverlay.classList.remove('opacity-0', 'pointer-events-none');
-      const card = document.getElementById('gameOverlayCard'); card.classList.remove('scale-95'); card.classList.add('scale-100');
+      const card = document.getElementById('gameOverlayCard');
+      card.classList.remove('scale-95');
+      card.classList.add('scale-100');
     }
-    function exitMinigame() { state.mode = 'cruise'; state.gameActive = false; if (gameTimerInterval) clearInterval(gameTimerInterval); scoreBadge.classList.add('hidden'); modeText.innerText = "Fish Catch Game"; gameOverlay.classList.add('opacity-0', 'pointer-events-none'); }
-    modeToggleBtn.addEventListener('click', () => { if (state.mode === 'cruise') { startMinigame(); } else { exitMinigame(); } });
-    restartGameBtn.addEventListener('click', () => { gameOverlay.classList.add('opacity-0', 'pointer-events-none'); startMinigame(); });
+
+    function exitMinigame() {
+      state.mode = 'cruise';
+      state.gameActive = false;
+      if (gameTimerInterval) clearInterval(gameTimerInterval);
+      scoreBadge.classList.add('hidden');
+      modeText.innerText = "Fish Catch Game";
+      gameOverlay.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    modeToggleBtn.addEventListener('click', () => {
+      if (state.mode === 'cruise') {
+        startMinigame();
+      } else {
+        exitMinigame();
+      }
+    });
+
+    restartGameBtn.addEventListener('click', () => {
+      gameOverlay.classList.add('opacity-0', 'pointer-events-none');
+      startMinigame();
+    });
+
   </script>
-
-
-    <div style="position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);">
-        <a id="prevBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">← Previous</a>
-        <span style="color:rgba(255,255,255,0.7);font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;">Gemini 3.6 Flash</span>
-        <a id="nextBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">Next →</a>
-    </div>
-    <style>
-        #prevBtn:hover, #nextBtn:hover {{ background:rgba(255,255,255,0.25); }}
-        #prevBtn:disabled, #nextBtn:disabled {{ opacity:0.3; pointer-events:none; }}
-    </style>
-    <script>
-        (function() {{
-            var pages = ["bigpickle-pelican-bike.html", "composer-2.5-fast-pelican-bicycle.html", "ling-pelican-bike.html", "mimov2.5-pelican-bicycle.html", "northminicode-pelican-bicycle.html", "pelican-bicycle-deepseekv4flash.html", "pelican-bicycle-lagunas2.1.html", "pelican-bicycle-nemotron.html", "kimi-k2.7-pelican-bike.html", "minimax-m3-pelican-bicycle.html", "qwen-3.5-397b-a17b-pelican-bicycle.html", "claude-sonnet-4.6-pelican-bicycle.html", "glm-5.1-pelican-bicycle.html", "gemini-3-6-flash-pelican-bicycle.html"];
-            var current = window.location.pathname.split("/").pop();
-            var idx = pages.indexOf(current);
-            var prevBtn = document.getElementById("prevBtn");
-            var nextBtn = document.getElementById("nextBtn");
-            if (idx > 0) {{ prevBtn.href = pages[idx - 1]; }} else {{ prevBtn.href = pages[pages.length - 1]; }}
-            if (idx < pages.length - 1) {{ nextBtn.href = pages[idx + 1]; }} else {{ nextBtn.href = pages[0]; }}
-        }})();
-    </script>
-
 </body>
 </html>
