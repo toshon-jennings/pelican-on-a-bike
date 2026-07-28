@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composer 2.5 Fast — Pelican on a Bicycle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: linear-gradient(180deg, #6ec6ff 0%, #b3e5fc 45%, #4fc3f7 45%, #0288d1 100%);
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
+  .title {
+    position: absolute;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    font-weight: 700;
+    color: #0d3b66;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+    white-space: nowrap;
+  }
+
+  .sun {
+    position: absolute;
+    top: 2.5rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    background: radial-gradient(circle at 35% 35%, #fff59d, #ffb300);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(255, 193, 7, 0.65);
+    animation: sunGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes sunGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.92);
+    border-radius: 999px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
+    animation: cloudFloat linear infinite;
+  }
+
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+  }
+
+  .cloud-a {
+    top: 4.5rem;
+    left: 8%;
+    width: 72px;
+    height: 24px;
+    animation-duration: 28s;
+  }
+  .cloud-a::before { width: 34px; height: 34px; top: -18px; left: 10px; }
+  .cloud-a::after { width: 28px; height: 28px; top: -12px; left: 34px; }
+
+  .cloud-b {
+    top: 7rem;
+    left: 55%;
+    width: 58px;
+    height: 20px;
+    animation-duration: 34s;
+    animation-delay: -12s;
+  }
+  .cloud-b::before { width: 26px; height: 26px; top: -14px; left: 8px; }
+  .cloud-b::after { width: 22px; height: 22px; top: -10px; left: 28px; }
+
+  @keyframes cloudFloat {
+    0% { transform: translateX(-120px); }
+    100% { transform: translateX(calc(100vw + 120px)); }
+  }
+
+  .ocean {
+    position: absolute;
+    bottom: 28%;
+    left: 0;
+    width: 100%;
+    height: 18%;
+    background: linear-gradient(180deg, #039be5 0%, #0277bd 100%);
+    overflow: hidden;
+  }
+
+  .wave {
+    position: absolute;
+    left: -10%;
+    width: 120%;
+    height: 14px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 50%;
+    animation: waveRoll 3s ease-in-out infinite;
+  }
+  .wave:nth-child(1) { top: 18%; animation-delay: 0s; }
+  .wave:nth-child(2) { top: 48%; animation-delay: -1s; opacity: 0.7; }
+  .wave:nth-child(3) { top: 72%; animation-delay: -2s; opacity: 0.5; }
+
+  @keyframes waveRoll {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(24px) scaleY(1.15); }
+  }
+
+  .boardwalk {
+    position: absolute;
+    bottom: 22%;
+    left: 0;
+    width: 100%;
+    height: 6%;
+    background: repeating-linear-gradient(
+      90deg,
+      #8d6e63 0px,
+      #8d6e63 38px,
+      #6d4c41 38px,
+      #6d4c41 40px
+    );
+    border-top: 3px solid #5d4037;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.12);
+  }
+
+  .sand {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 22%;
+    background: linear-gradient(180deg, #ffe082 0%, #ffca28 100%);
+  }
+
+  .speed-lines {
+    position: absolute;
+    bottom: 30%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    pointer-events: none;
+  }
+
+  .speed-line {
+    position: absolute;
+    height: 2px;
+    background: rgba(93, 64, 55, 0.25);
+    border-radius: 2px;
+    animation: speedScroll 0.7s linear infinite;
+  }
+  .speed-line:nth-child(1) { width: 28px; top: 8px; left: 15%; animation-delay: 0s; }
+  .speed-line:nth-child(2) { width: 18px; top: 22px; left: 42%; animation-delay: 0.15s; }
+  .speed-line:nth-child(3) { width: 34px; top: 6px; left: 68%; animation-delay: 0.3s; }
+  .speed-line:nth-child(4) { width: 22px; top: 28px; left: 84%; animation-delay: 0.45s; }
+
+  @keyframes speedScroll {
+    0% { transform: translateX(0); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateX(-140px); opacity: 0; }
+  }
+
+  .rider {
+    position: absolute;
+    bottom: calc(22% + 18px);
+    left: 0;
+    width: 260px;
+    height: 190px;
+    animation: cruise 7s linear infinite;
+  }
+
+  @keyframes cruise {
+    0% { transform: translateX(-280px); }
+    100% { transform: translateX(calc(100vw + 80px)); }
+  }
+
+  .bike {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .wheel {
+    position: absolute;
+    bottom: 0;
+    width: 64px;
+    height: 64px;
+    border: 5px solid #263238;
+    border-radius: 50%;
+    background: radial-gradient(circle, #eceff1 30%, #cfd8dc 100%);
+    animation: wheelTurn 0.55s linear infinite;
+  }
+
+  .wheel-back { left: 18px; }
+  .wheel-front { left: 168px; }
+
+  .wheel::before {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    background: #263238;
+    border-radius: 50%;
+  }
+
+  .wheel::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 3px;
+    margin-top: -1.5px;
+    background: #78909c;
+    transform-origin: 0 50%;
+    animation: wheelTurn 0.55s linear infinite;
+  }
+
+  @keyframes wheelTurn {
+    to { transform: rotate(360deg); }
+  }
+
+  .frame-bar {
+    position: absolute;
+    height: 4px;
+    background: #e53935;
+    border-radius: 2px;
+    transform-origin: left center;
+  }
+
+  .bar-down { bottom: 22px; left: 46px; width: 92px; transform: rotate(-28deg); }
+  .bar-up { bottom: 48px; left: 46px; width: 88px; transform: rotate(18deg); }
+  .bar-front { bottom: 22px; left: 118px; width: 72px; transform: rotate(-58deg); }
+  .bar-stem { bottom: 58px; left: 118px; width: 58px; transform: rotate(-34deg); }
+
+  .seat {
+    position: absolute;
+    bottom: 66px;
+    left: 108px;
+    width: 22px;
+    height: 6px;
+    background: #263238;
+    border-radius: 3px 3px 1px 1px;
+  }
+
+  .handle-post {
+    position: absolute;
+    bottom: 58px;
+    left: 176px;
+    width: 4px;
+    height: 34px;
+    background: #455a64;
+    transform: rotate(-8deg);
+    transform-origin: bottom center;
+  }
+
+  .handlebar {
+    position: absolute;
+    bottom: 88px;
+    left: 160px;
+    width: 34px;
+    height: 4px;
+    background: #455a64;
+    border-radius: 2px;
+    animation: steer 2.4s ease-in-out infinite;
+    transform-origin: 70% center;
+  }
+
+  @keyframes steer {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  .crank {
+    position: absolute;
+    bottom: 18px;
+    left: 72px;
+    width: 34px;
+    height: 4px;
+    background: #546e7a;
+    transform-origin: left center;
+    animation: crankSpin 0.55s linear infinite;
+  }
+
+  .pedal {
+    position: absolute;
+    right: -8px;
+    top: -6px;
+    width: 14px;
+    height: 5px;
+    background: #37474f;
+    border-radius: 2px;
+  }
+
+  @keyframes crankSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pelican {
+    position: absolute;
+    bottom: 62px;
+    left: 78px;
+    z-index: 2;
+    animation: pelicanBob 0.9s ease-in-out infinite;
+  }
+
+  @keyframes pelicanBob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-5px) rotate(-4deg); }
+  }
+
+  .torso {
+    position: relative;
+    width: 68px;
+    height: 44px;
+    background: linear-gradient(145deg, #fafafa 0%, #e0e0e0 100%);
+    border-radius: 55% 45% 42% 48%;
+    box-shadow: inset -4px -6px 0 rgba(0,0,0,0.05);
+  }
+
+  .wing {
+    position: absolute;
+    top: 2px;
+    left: 8px;
+    width: 40px;
+    height: 32px;
+    background: #cfd8dc;
+    border-radius: 10% 70% 55% 20%;
+    transform-origin: 12px 24px;
+    animation: flap 0.45s ease-in-out infinite alternate;
+  }
+
+  .wing.rear {
+    left: 14px;
+    background: #b0bec5;
+    z-index: -1;
+    animation-delay: 0.12s;
+  }
+
+  @keyframes flap {
+    from { transform: rotate(-8deg); }
+    to { transform: rotate(14deg); }
+  }
+
+  .tail {
+    position: absolute;
+    right: -14px;
+    top: 14px;
+    width: 22px;
+    height: 16px;
+    background: #b0bec5;
+    border-radius: 0 80% 20% 0;
+    transform: rotate(-18deg);
+  }
+
+  .neck {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    width: 14px;
+    height: 24px;
+    background: #f5f5f5;
+    border-radius: 40%;
+    transform: rotate(12deg);
+  }
+
+  .head {
+    position: absolute;
+    top: -34px;
+    left: -2px;
+    width: 34px;
+    height: 32px;
+    background: #fafafa;
+    border-radius: 50%;
+  }
+
+  .eye {
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    width: 7px;
+    height: 7px;
+    background: #212121;
+    border-radius: 50%;
+  }
+
+  .eye::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    border-radius: 50%;
+  }
+
+  .beak-top {
+    position: absolute;
+    top: 18px;
+    left: -28px;
+    width: 34px;
+    height: 7px;
+    background: #ff8f00;
+    border-radius: 4px 0 10px 4px;
+    transform-origin: right center;
+    animation: beakBob 3s ease-in-out infinite;
+  }
+
+  .beak-pouch {
+    position: absolute;
+    top: 22px;
+    left: -24px;
+    width: 24px;
+    height: 18px;
+    background: #ffb74d;
+    border-radius: 0 0 55% 35%;
+    animation: pouchWiggle 3s ease-in-out infinite;
+  }
+
+  @keyframes beakBob {
+    0%, 88%, 100% { transform: rotate(0deg); }
+    92% { transform: rotate(-6deg); }
+    96% { transform: rotate(2deg); }
+  }
+
+  @keyframes pouchWiggle {
+    0%, 88%, 100% { transform: scaleY(1); }
+    92% { transform: scaleY(1.08); }
+    96% { transform: scaleY(0.96); }
+  }
+
+  .leg {
+    position: absolute;
+    bottom: -16px;
+    width: 3px;
+    height: 20px;
+    background: #ff9800;
+    transform-origin: top center;
+  }
+
+  .leg-left {
+    left: 20px;
+    animation: pedalLeft 0.55s linear infinite;
+  }
+
+  .leg-right {
+    left: 38px;
+    animation: pedalRight 0.55s linear infinite;
+  }
+
+  @keyframes pedalLeft {
+    0%, 100% { transform: rotate(-18deg); }
+    50% { transform: rotate(18deg); }
+  }
+
+  @keyframes pedalRight {
+    0%, 100% { transform: rotate(18deg); }
+    50% { transform: rotate(-18deg); }
+  }
+
+  .foot {
+    position: absolute;
+    bottom: -3px;
+    left: -5px;
+    width: 12px;
+    height: 4px;
+    background: #ff9800;
+    border-radius: 2px;
+  }
+
+  .shadow {
+    position: absolute;
+    bottom: calc(22% + 8px);
+    left: 50%;
+    width: 120px;
+    height: 12px;
+    margin-left: -60px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: shadowMove 7s linear infinite;
+  }
+
+  @keyframes shadowMove {
+    0% { transform: translateX(-280px) scaleX(0.85); opacity: 0.35; }
+    50% { opacity: 0.55; }
+    100% { transform: translateX(calc(100vw + 80px)) scaleX(0.85); opacity: 0.35; }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="title">Composer 2.5 Fast — Pelican on a Bicycle</div>
+    <div class="sun"></div>
+    <div class="cloud cloud-a"></div>
+    <div class="cloud cloud-b"></div>
+
+    <div class="ocean">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+    <div class="boardwalk"></div>
+    <div class="sand"></div>
+
+    <div class="speed-lines">
+      <div class="speed-line"></div>
+      <div class="speed-line"></div>
+      <div class="speed-line"></div>
+      <div class="speed-line"></div>
+    </div>
+
+    <div class="shadow"></div>
+
+    <div class="rider">
+      <div class="bike">
+        <div class="wheel wheel-back"></div>
+        <div class="wheel wheel-front"></div>
+        <div class="frame-bar bar-down"></div>
+        <div class="frame-bar bar-up"></div>
+        <div class="frame-bar bar-front"></div>
+        <div class="frame-bar bar-stem"></div>
+        <div class="seat"></div>
+        <div class="handle-post"></div>
+        <div class="handlebar"></div>
+        <div class="crank"><div class="pedal"></div></div>
+
+        <div class="pelican">
+          <div class="torso">
+            <div class="wing rear"></div>
+            <div class="wing"></div>
+            <div class="tail"></div>
+            <div class="neck"></div>
+            <div class="head">
+              <div class="eye"></div>
+              <div class="beak-top"></div>
+              <div class="beak-pouch"></div>
+            </div>
+            <div class="leg leg-left"><div class="foot"></div></div>
+            <div class="leg leg-right"><div class="foot"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
