@@ -924,25 +924,26 @@
     </div>
   </div>
 
+
     <div style="position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);">
         <a id="prevBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">← Previous</a>
-        <span style="color:rgba(255,255,255,0.5);font-family:sans-serif;font-size:12px;">pelican-on-a-bike</span>
+        <span style="color:rgba(255,255,255,0.7);font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;">Nemotron</span>
         <a id="nextBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">Next →</a>
     </div>
     <style>
-        #prevBtn:hover, #nextBtn:hover { background:rgba(255,255,255,0.25); }
-        #prevBtn:disabled, #nextBtn:disabled { opacity:0.3; pointer-events:none; }
+        #prevBtn:hover, #nextBtn:hover {{ background:rgba(255,255,255,0.25); }}
+        #prevBtn:disabled, #nextBtn:disabled {{ opacity:0.3; pointer-events:none; }}
     </style>
     <script>
-        (function() {
-            var pages = ['bigpickle-pelican-bike.html', 'composer-2.5-fast-pelican-bicycle.html', 'ling-pelican-bike.html', 'mimov2.5-pelican-bicycle.html', 'northminicode-pelican-bicycle.html', 'pelican-bicycle-deepseekv4flash.html', 'pelican-bicycle-lagunas2.1.html', 'pelican-bicycle-nemotron.html', 'kimi-k2.7-pelican-bike.html', 'minimax-m3-pelican-bicycle.html', 'qwen-3.5-397b-a17b-pelican-bicycle.html', 'claude-sonnet-4.6-pelican-bicycle.html', 'glm-5.1-pelican-bicycle.html', 'gemini-3-6-flash-pelican-bicycle.html'];
+        (function() {{
+            var pages = ["bigpickle-pelican-bike.html", "composer-2.5-fast-pelican-bicycle.html", "ling-pelican-bike.html", "mimov2.5-pelican-bicycle.html", "northminicode-pelican-bicycle.html", "pelican-bicycle-deepseekv4flash.html", "pelican-bicycle-lagunas2.1.html", "pelican-bicycle-nemotron.html", "kimi-k2.7-pelican-bike.html", "minimax-m3-pelican-bicycle.html", "qwen-3.5-397b-a17b-pelican-bicycle.html", "claude-sonnet-4.6-pelican-bicycle.html", "glm-5.1-pelican-bicycle.html", "gemini-3-6-flash-pelican-bicycle.html"];
             var current = window.location.pathname.split("/").pop();
             var idx = pages.indexOf(current);
             var prevBtn = document.getElementById("prevBtn");
             var nextBtn = document.getElementById("nextBtn");
-            if (idx > 0) { prevBtn.href = pages[idx - 1]; } else { prevBtn.href = pages[pages.length - 1]; }
-            if (idx < pages.length - 1) { nextBtn.href = pages[idx + 1]; } else { nextBtn.href = pages[0]; }
-        })();
+            if (idx > 0) {{ prevBtn.href = pages[idx - 1]; }} else {{ prevBtn.href = pages[pages.length - 1]; }}
+            if (idx < pages.length - 1) {{ nextBtn.href = pages[idx + 1]; }} else {{ nextBtn.href = pages[0]; }}
+        }})();
     </script>
 
 </body>
