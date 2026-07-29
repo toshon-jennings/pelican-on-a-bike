@@ -8,7 +8,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    min-height: 100vh;
+    min-height: calc(100vh - var(--pob-nav-h));
     overflow: hidden;
     font-family: "Segoe UI", system-ui, sans-serif;
     background: linear-gradient(180deg, #6ec6ff 0%, #b3e5fc 45%, #4fc3f7 45%, #0288d1 100%);
@@ -18,7 +18,7 @@
     position: relative;
     width: 100%;
     max-width: 720px;
-    height: 100vh;
+    height: calc(100vh - var(--pob-nav-h));
     margin: 0 auto;
   }
 
@@ -563,26 +563,96 @@
   </div>
 
 
-    <div style="position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);">
-        <a id="prevBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">← Previous</a>
-        <a href="index.html" aria-label="Back to the gallery from Composer 2.5 Fast" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;padding:6px 16px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:2px;min-width:112px;"><span style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.65);">⌂ Gallery</span><span>Composer 2.5 Fast</span></a>
-        <a id="nextBtn" href="#" style="color:#fff;text-decoration:none;font-family:sans-serif;font-size:14px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.1);transition:background 0.2s;">Next →</a>
-    </div>
     <style>
-        #prevBtn:hover, #nextBtn:hover {{ background:rgba(255,255,255,0.25); }}
-        #prevBtn:disabled, #nextBtn:disabled {{ opacity:0.3; pointer-events:none; }}
+      :root { --pob-nav-h: 64px; }
+      /* The scene sits on top of the bar; nothing renders underneath it. */
+      body { position: relative; }
+      .pob-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2147483000;
+        box-sizing: border-box;
+        height: var(--pob-nav-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        padding: 0 20px;
+        background: #11161c;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .pob-nav a {
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: background 0.2s;
+      }
+      .pob-nav a:hover,
+      .pob-nav a:focus-visible {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .pob-nav-step {
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      .pob-nav-home {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 112px;
+        padding: 6px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-align: center;
+      }
+      .pob-nav-home small {
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.65);
+      }
     </style>
+    <nav class="pob-nav" aria-label="Gallery navigation">
+      <a class="pob-nav-step" id="prevBtn" href="#">&#8592; Previous</a>
+      <a class="pob-nav-home" href="index.html" aria-label="Back to the gallery from Composer 2.5 Fast"><small>&#8962; Gallery</small><span>Composer 2.5 Fast</span></a>
+      <a class="pob-nav-step" id="nextBtn" href="#">Next &#8594;</a>
+    </nav>
     <script>
-        (function() {{
-            var pages = ["bigpickle-pelican-bike.html", "composer-2.5-fast-pelican-bicycle.html", "ling-pelican-bike.html", "mimov2.5-pelican-bicycle.html", "northminicode-pelican-bicycle.html", "pelican-bicycle-deepseekv4flash.html", "pelican-bicycle-lagunas2.1.html", "pelican-bicycle-nemotron.html", "kimi-k2.7-pelican-bike.html", "minimax-m3-pelican-bicycle.html", "qwen-3.5-397b-a17b-pelican-bicycle.html", "claude-sonnet-4.6-pelican-bicycle.html", "glm-5.1-pelican-bicycle.html", "gemini-3-6-flash-pelican-bicycle.html"];
-            var current = window.location.pathname.split("/").pop();
-            var idx = pages.indexOf(current);
-            var prevBtn = document.getElementById("prevBtn");
-            var nextBtn = document.getElementById("nextBtn");
-            if (idx > 0) {{ prevBtn.href = pages[idx - 1]; }} else {{ prevBtn.href = pages[pages.length - 1]; }}
-            if (idx < pages.length - 1) {{ nextBtn.href = pages[idx + 1]; }} else {{ nextBtn.href = pages[0]; }}
-        }})();
+      (function () {
+        // Keep this list alphabetical by model name when adding a rendition.
+        var pages = [
+          "bigpickle-pelican-bike.html",
+          "chatgpt-5.4-mini-pelican-bicycle.html",
+          "claude-opus-5-pelican-bicycle.html",
+          "claude-sonnet-4.6-pelican-bicycle.html",
+          "composer-2.5-fast-pelican-bicycle.html",
+          "pelican-bicycle-deepseekv4flash.html",
+          "gemini-3-6-flash-pelican-bicycle.html",
+          "glm-5.1-pelican-bicycle.html",
+          "kimi-k2.7-pelican-bike.html",
+          "pelican-bicycle-lagunas2.1.html",
+          "ling-pelican-bike.html",
+          "mimov2.5-pelican-bicycle.html",
+          "minimax-m3-pelican-bicycle.html",
+          "pelican-bicycle-nemotron.html",
+          "northminicode-pelican-bicycle.html",
+          "qwen-3.5-397b-a17b-pelican-bicycle.html"
+        ];
+        var current = window.location.pathname.split("/").pop();
+        var idx = pages.indexOf(current);
+        if (idx < 0) idx = 0;
+        document.getElementById("prevBtn").href = pages[(idx - 1 + pages.length) % pages.length];
+        document.getElementById("nextBtn").href = pages[(idx + 1) % pages.length];
+      })();
     </script>
-
 </body>
 </html>

@@ -358,7 +358,7 @@
     .front-leg,
     .back-leg {
       transform-box: view-box;
-      transform-origin: 416px 257px;
+      transform-origin: 350px 236px;
     }
 
     .front-leg {
@@ -371,13 +371,13 @@
 
     .scarf-tail {
       transform-box: fill-box;
-      transform-origin: left center;
+      transform-origin: right center;
       animation: scarf 0.8s ease-in-out infinite alternate;
     }
 
     .wing {
       transform-box: fill-box;
-      transform-origin: 80% 50%;
+      transform-origin: 93% 15%;
       animation: wing 1.1s ease-in-out infinite alternate;
     }
 
@@ -591,18 +591,18 @@
     }
 
     @keyframes pedal-front {
-      0%, 100% { transform: rotate(7deg); }
+      0%, 100% { transform: rotate(9deg); }
       50% { transform: rotate(-9deg); }
     }
 
     @keyframes pedal-back {
-      0%, 100% { transform: rotate(-8deg); }
-      50% { transform: rotate(8deg); }
+      0%, 100% { transform: rotate(-9deg); }
+      50% { transform: rotate(9deg); }
     }
 
     @keyframes scarf {
-      from { transform: rotate(4deg) skewX(0); }
-      to { transform: rotate(-7deg) skewX(-8deg); }
+      from { transform: rotate(-5deg) skewX(0); }
+      to { transform: rotate(6deg) skewX(7deg); }
     }
 
     @keyframes wing {
@@ -797,81 +797,108 @@
         <div class="cloud cloud-two"></div>
         <div class="road"></div>
         <div class="rider-motion">
+          <!--
+            One coordinate system, no mirroring: the rider travels toward +x.
+            Rear hub 196,402 · bottom bracket 346,402 · front hub 556,402.
+            Saddle sits over the rear wheel, bars over the front, and every
+            limb, the beak, the cap brim and the scarf are drawn to match.
+          -->
           <svg class="rider-svg" viewBox="0 0 720 540" xmlns="http://www.w3.org/2000/svg">
+            <!-- wind streaks trail behind, to the left -->
             <g fill="none" stroke="#073b35" stroke-width="5" stroke-linecap="round">
-              <path class="speed-line" d="M80 220h90"/>
-              <path class="speed-line" d="M40 255h110"/>
-              <path class="speed-line" d="M90 290h75"/>
+              <path class="speed-line" d="M56 214h96"/>
+              <path class="speed-line" d="M24 262h118"/>
+              <path class="speed-line" d="M70 306h82"/>
             </g>
 
             <g class="wheel">
-              <circle cx="210" cy="408" r="104" fill="#f7f1e3" stroke="#073b35" stroke-width="11"/>
-              <circle cx="210" cy="408" r="86" fill="none" stroke="#073b35" stroke-width="2"/>
+              <circle cx="196" cy="402" r="100" fill="#f7f1e3" stroke="#073b35" stroke-width="11"/>
+              <circle cx="196" cy="402" r="82" fill="none" stroke="#073b35" stroke-width="2"/>
               <g stroke="#073b35" stroke-width="2" opacity="0.72">
-                <path d="M210 322v172M124 408h172M149 347l122 122M149 469l122-122"/>
+                <path d="M196 320v164M114 402h164M138 344l116 116M138 460l116-116"/>
               </g>
-              <circle cx="210" cy="408" r="9" fill="#e8583e" stroke="#073b35" stroke-width="5"/>
+              <circle cx="196" cy="402" r="9" fill="#e8583e" stroke="#073b35" stroke-width="5"/>
             </g>
 
             <g class="wheel">
-              <circle cx="546" cy="408" r="104" fill="#f7f1e3" stroke="#073b35" stroke-width="11"/>
-              <circle cx="546" cy="408" r="86" fill="none" stroke="#073b35" stroke-width="2"/>
+              <circle cx="556" cy="402" r="100" fill="#f7f1e3" stroke="#073b35" stroke-width="11"/>
+              <circle cx="556" cy="402" r="82" fill="none" stroke="#073b35" stroke-width="2"/>
               <g stroke="#073b35" stroke-width="2" opacity="0.72">
-                <path d="M546 322v172M460 408h172M485 347l122 122M485 469l122-122"/>
+                <path d="M556 320v164M474 402h164M498 344l116 116M498 460l116-116"/>
               </g>
-              <circle cx="546" cy="408" r="9" fill="#e8583e" stroke="#073b35" stroke-width="5"/>
+              <circle cx="556" cy="402" r="9" fill="#e8583e" stroke="#073b35" stroke-width="5"/>
             </g>
 
+            <!-- drivetrain: chainring forward of the rear cog -->
+            <g fill="none" stroke="#073b35" stroke-width="5" stroke-linecap="round" opacity="0.85">
+              <path d="M346 380 198 390"/>
+              <path d="M346 424 198 414"/>
+            </g>
+
+            <!-- far leg: knee raised and forward, pedal at the top of the stroke -->
+            <g class="back-leg">
+              <path d="M348 236C364 266 378 292 376 318 374 344 350 364 320 374" fill="none" stroke="#073b35" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M348 236C364 266 378 292 376 318 374 344 350 364 320 374" fill="none" stroke="#c98f1c" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M304 374h34" fill="none" stroke="#073b35" stroke-width="13" stroke-linecap="round"/>
+              <path d="M306 374h30" fill="none" stroke="#c98f1c" stroke-width="6" stroke-linecap="round"/>
+            </g>
+
+            <!-- frame: rear triangle, main triangle, fork, stem, bars, saddle -->
             <g fill="none" stroke="#073b35" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M210 408 321 290 401 408H210l75-154h148l113 154" stroke-width="13"/>
-              <path d="M321 290 433 254" stroke-width="11"/>
-              <path d="M414 248h62" stroke-width="10"/>
-              <path d="M285 252h-52" stroke-width="12"/>
-              <path d="M231 247l-11-14" stroke-width="7"/>
+              <path d="M196 402h150l-46-154Z" stroke-width="13"/>
+              <path d="M346 402 466 284 480 250 300 248" stroke-width="13"/>
+              <path d="M466 284 556 402" stroke-width="13"/>
+              <path d="M480 250 502 228" stroke-width="11"/>
+              <path d="M476 228h64" stroke-width="11"/>
+              <path d="M256 242h44" stroke-width="16"/>
+              <path d="M300 242h40" stroke-width="8"/>
             </g>
 
             <g class="crank">
-              <circle cx="401" cy="408" r="24" fill="#f5b82e" stroke="#073b35" stroke-width="7"/>
-              <path d="M401 408l22 25M401 408l-22-25" fill="none" stroke="#073b35" stroke-width="7" stroke-linecap="round"/>
-              <circle cx="425" cy="435" r="7" fill="#073b35"/>
-              <circle cx="378" cy="382" r="7" fill="#073b35"/>
+              <circle cx="346" cy="402" r="22" fill="#f7f1e3" stroke="#073b35" stroke-width="7"/>
+              <path d="M346 402 376 429M346 402 316 375" fill="none" stroke="#073b35" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="376" cy="429" r="7" fill="#073b35"/>
+              <circle cx="316" cy="375" r="7" fill="#073b35"/>
             </g>
 
-            <g class="back-leg">
-              <path d="M416 257Q398 319 382 378" fill="none" stroke="#073b35" stroke-width="28" stroke-linecap="round"/>
-              <path d="M416 257Q398 319 382 378" fill="none" stroke="#f5b82e" stroke-width="18" stroke-linecap="round"/>
-            </g>
+            <!-- body: rump on the saddle, shoulder forward -->
+            <path d="M294 210C272 162 314 104 382 102 448 100 480 136 474 170 468 210 434 232 376 244 326 254 304 238 294 210Z" fill="#f7f1e3" stroke="#073b35" stroke-width="9" stroke-linejoin="round"/>
+            <path class="wing" d="M440 166C400 154 342 166 320 200 336 208 358 210 378 206 354 222 326 228 306 226 334 240 380 238 412 222 434 210 450 184 440 166Z" fill="#d5ece4" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+            <path class="scarf-tail" d="M444 152C392 126 336 108 296 74 306 108 330 126 358 136 322 140 292 130 272 114 306 148 380 168 440 162Z" fill="#e8583e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+
+            <!-- neck and head, leaning into the wind -->
+            <path d="M424 194C414 142 438 92 484 78 522 66 560 82 562 112 564 142 534 158 506 158 486 158 462 170 452 192Z" fill="#f7f1e3" stroke="#073b35" stroke-width="9" stroke-linejoin="round"/>
+
+            <!-- far wing on the bars -->
+            <path d="M448 204C472 206 488 214 498 226" fill="none" stroke="#073b35" stroke-width="22" stroke-linecap="round"/>
+            <path d="M448 204C472 206 488 214 498 226" fill="none" stroke="#8dc9c0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M488 214C502 210 512 222 504 234 494 242 482 234 484 222Z" fill="#8dc9c0" stroke="#073b35" stroke-width="7" stroke-linejoin="round"/>
+
+            <!-- pouch and mandible, pointing the way the bike is going -->
+            <path d="M546 108C550 154 606 178 656 148 672 138 684 128 690 118 644 126 592 122 546 108Z" fill="#e8583e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+            <path d="M544 88C596 92 654 104 692 118 660 124 600 122 546 112Z" fill="#f5b82e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+            <circle cx="524" cy="100" r="13" fill="#073b35"/>
+            <circle cx="528" cy="95" r="4.5" fill="#f7f1e3"/>
+
+            <!-- cycling cap, brim forward -->
+            <path d="M470 88C466 50 496 30 526 38 550 44 562 64 558 84 528 72 494 76 470 88Z" fill="#8dc9c0" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+            <path d="M556 74C582 68 602 74 608 84 590 90 566 86 554 80Z" fill="#8dc9c0" stroke="#073b35" stroke-width="7" stroke-linejoin="round"/>
+
+            <!-- scarf knot, where the tail comes off the neck -->
+            <path d="M416 136C440 154 470 162 492 156L488 186C462 192 432 180 412 162Z" fill="#e8583e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
+
+            <!-- near wing on the bars -->
+            <path d="M452 194C484 198 514 210 530 228" fill="none" stroke="#073b35" stroke-width="24" stroke-linecap="round"/>
+            <path d="M452 194C484 198 514 210 530 228" fill="none" stroke="#f7f1e3" stroke-width="14" stroke-linecap="round"/>
+            <path d="M520 216C536 212 546 224 536 236 526 244 512 236 512 224Z" fill="#f7f1e3" stroke="#073b35" stroke-width="7" stroke-linejoin="round"/>
+
+            <!-- near leg: knee forward, pedal at the bottom of the stroke -->
             <g class="front-leg">
-              <path d="M442 260Q450 330 425 435" fill="none" stroke="#073b35" stroke-width="30" stroke-linecap="round"/>
-              <path d="M442 260Q450 330 425 435" fill="none" stroke="#f5b82e" stroke-width="19" stroke-linecap="round"/>
+              <path d="M354 238C372 288 382 348 378 424" fill="none" stroke="#073b35" stroke-width="27" stroke-linecap="round"/>
+              <path d="M354 238C372 288 382 348 378 424" fill="none" stroke="#f5b82e" stroke-width="17" stroke-linecap="round"/>
+              <path d="M359 427h38" fill="none" stroke="#073b35" stroke-width="14" stroke-linecap="round"/>
+              <path d="M361 427h34" fill="none" stroke="#f5b82e" stroke-width="7" stroke-linecap="round"/>
             </g>
-
-            <g transform="translate(810 0) scale(-1 1)">
-              <path d="M329 122q-21-61 52-72 69-10 86 52-20 11-63 6-45-5-75 14Z" fill="#8dc9c0" stroke="#073b35" stroke-width="8"/>
-              <path d="M395 52l13-21" fill="none" stroke="#073b35" stroke-width="7" stroke-linecap="round"/>
-              <path d="M403 31h39" fill="none" stroke="#073b35" stroke-width="7" stroke-linecap="round"/>
-
-              <path class="scarf-tail" d="M441 160q82 9 129-40-16 47-50 62 39 12 68 48-70-15-133-40Z" fill="#e8583e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
-              <path d="M402 146q19 11 52 18l-4 31q-33 1-62-17Z" fill="#e8583e" stroke="#073b35" stroke-width="8"/>
-            </g>
-
-            <ellipse cx="404" cy="232" rx="112" ry="78" fill="#f7f1e3" stroke="#073b35" stroke-width="9" transform="rotate(8 404 232)"/>
-            <path class="wing" d="M356 205q63-45 127 9-13 65-94 67-53 1-73-20 44 0 71-22-44 9-65-8 34-2 62-22-26 4-28-4Z" fill="#d5ece4" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
-            <g transform="translate(810 0) scale(-1 1)">
-              <path d="M459 186q23-55 9-100-16-48-76-40-45 7-55 52-7 34 23 74" fill="#f7f1e3" stroke="#073b35" stroke-width="9"/>
-
-              <path d="M358 91Q270 76 141 139q40 14 142 10 54-2 86-25Z" fill="#f5b82e" stroke="#073b35" stroke-width="9" stroke-linejoin="round"/>
-              <path d="M142 139q64 37 174 9l41-22q-88 14-215 13Z" fill="#e8583e" stroke="#073b35" stroke-width="8" stroke-linejoin="round"/>
-              <circle cx="413" cy="91" r="13" fill="#073b35"/>
-              <circle cx="417" cy="87" r="4" fill="#f7f1e3"/>
-            </g>
-
-            <path d="M314 188q-45 15-61 70" fill="none" stroke="#073b35" stroke-width="20" stroke-linecap="round"/>
-            <path d="M314 188q-45 15-61 70" fill="none" stroke="#f7f1e3" stroke-width="11" stroke-linecap="round"/>
-            <path d="M253 258q-17 1-23-9" fill="none" stroke="#073b35" stroke-width="9" stroke-linecap="round"/>
-            <path d="M461 193q21 24 10 55" fill="none" stroke="#073b35" stroke-width="20" stroke-linecap="round"/>
-            <path d="M461 193q21 24 10 55" fill="none" stroke="#f7f1e3" stroke-width="11" stroke-linecap="round"/>
-            <path d="M470 247q15 9 4 21" fill="none" stroke="#073b35" stroke-width="9" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -901,22 +928,25 @@
   </footer>
 
   <script>
+    // Keep this list alphabetical by model name when adding a rendition.
+    // The same order is mirrored in each page's prev/next array — see CLAUDE.md.
     const tests = [
       { file: "bigpickle-pelican-bike.html", model: "Big Pickle" },
+      { file: "chatgpt-5.4-mini-pelican-bicycle.html", model: "ChatGPT 5.4 Mini" },
+      { file: "claude-opus-5-pelican-bicycle.html", model: "Claude Opus 5" },
+      { file: "claude-sonnet-4.6-pelican-bicycle.html", model: "Claude Sonnet 4.6" },
       { file: "composer-2.5-fast-pelican-bicycle.html", model: "Composer 2.5 Fast" },
+      { file: "pelican-bicycle-deepseekv4flash.html", model: "DeepSeek v4 Flash" },
+      { file: "gemini-3-6-flash-pelican-bicycle.html", model: "Gemini 3.6 Flash" },
+      { file: "glm-5.1-pelican-bicycle.html", model: "GLM 5.1" },
+      { file: "kimi-k2.7-pelican-bike.html", model: "Kimi K2.7" },
+      { file: "pelican-bicycle-lagunas2.1.html", model: "Laguna S 2.1" },
       { file: "ling-pelican-bike.html", model: "Ling" },
       { file: "mimov2.5-pelican-bicycle.html", model: "Mimo v2.5" },
-      { file: "northminicode-pelican-bicycle.html", model: "North Mini Code" },
-      { file: "pelican-bicycle-deepseekv4flash.html", model: "DeepSeek v4 Flash" },
-      { file: "pelican-bicycle-lagunas2.1.html", model: "Laguna S 2.1" },
-      { file: "pelican-bicycle-nemotron.html", model: "Nemotron" },
-      { file: "kimi-k2.7-pelican-bike.html", model: "Kimi K2.7" },
       { file: "minimax-m3-pelican-bicycle.html", model: "MiniMax M3" },
+      { file: "pelican-bicycle-nemotron.html", model: "Nemotron" },
+      { file: "northminicode-pelican-bicycle.html", model: "North Mini Code" },
       { file: "qwen-3.5-397b-a17b-pelican-bicycle.html", model: "Qwen 3.5 397B A17B" },
-      { file: "claude-sonnet-4.6-pelican-bicycle.html", model: "Claude Sonnet 4.6" },
-      { file: "glm-5.1-pelican-bicycle.html", model: "GLM 5.1" },
-      { file: "gemini-3-6-flash-pelican-bicycle.html", model: "Gemini 3.6 Flash" },
-      { file: "claude-opus-5-pelican-bicycle.html", model: "Claude Opus 5" },
     ];
 
     const accents = ["#e8583e", "#2f9289", "#e0a51d"];

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A pelican with a little too much confidence, riding a bicycle through a bright coastal scene.">
+  <title>Pelican on a Bicycle - ChatGPT-5.4 Mini</title>
+  <style>
+    :root {
+      --paper: #f7f1e5;
+      --ink: #10262b;
+      --sea: #71c7c0;
+      --sea-deep: #2d8a91;
+      --sun: #ffd76d;
+      --coral: #ff7b5e;
+      --road: #3e444f;
+      --road-dark: #2d333c;
+      --frame: #e74c3c;
+      --chrome: #d3dae1;
+      --shadow: rgba(9, 24, 30, 0.22);
+      --panel: rgba(247, 241, 229, 0.82);
+      --max: 1240px;
+      --body: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+      --display: "Arial Narrow", "Trebuchet MS", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      min-width: 320px;
+      overflow: hidden;
+      font-family: var(--body);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(255, 255, 255, 0.7) 0 3px, transparent 4px),
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.5) 0 2px, transparent 3px),
+        linear-gradient(180deg, #7fd0e7 0%, #c8eef3 48%, #e8f5dd 72%, #f4e6ba 100%);
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.07) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 60% 70%, rgba(16, 38, 43, 0.03) 0 1px, transparent 1.5px);
+      background-size: 14px 14px, 18px 18px;
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+    }
+
+    .scene {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: calc(100svh - var(--pob-nav-h));
+      padding: clamp(1rem, 2.5vw, 2rem);
+    }
+
+    .badge {
+      position: absolute;
+      top: clamp(1rem, 2.2vw, 1.6rem);
+      left: clamp(1rem, 2.2vw, 1.6rem);
+      z-index: 3;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.9rem 1rem 0.85rem;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: 0 10px 30px var(--shadow);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .badge span:first-child {
+      font-size: 0.68rem;
+      font-weight: 700;
+      opacity: 0.72;
+    }
+
+    .badge strong {
+      font: 800 clamp(1rem, 1.3vw, 1.2rem) / 1 var(--display);
+      letter-spacing: 0.08em;
+    }
+
+    .stage {
+      position: relative;
+      width: min(calc(100vw - 2rem), var(--max));
+      height: min(calc(calc(100svh - var(--pob-nav-h)) - 8rem), 760px);
+      border: 3px solid var(--ink);
+      border-radius: 32px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)),
+        linear-gradient(180deg, #9adbe7 0%, #d7f2f6 54%, #eaf4d8 100%);
+      box-shadow: 0 28px 60px rgba(9, 24, 30, 0.18);
+    }
+
+    .horizon {
+      position: absolute;
+      inset: auto -8% 24% -8%;
+      height: 28%;
+      background:
+        radial-gradient(60% 80% at 18% 100%, #8dcf87 0 25%, transparent 26%),
+        radial-gradient(52% 75% at 52% 100%, #7ab87d 0 25%, transparent 26%),
+        radial-gradient(44% 72% at 86% 100%, #699f76 0 23%, transparent 24%);
+      opacity: 0.92;
+      filter: saturate(0.95);
+    }
+
+    .cloud {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      animation: drift linear infinite;
+      filter: blur(0.15px);
+    }
+
+    .cloud::before,
+    .cloud::after {
+      position: absolute;
+      content: "";
+      border-radius: 999px;
+      background: inherit;
+    }
+
+    .cloud.one {
+      top: 12%;
+      left: 110%;
+      width: 150px;
+      height: 44px;
+      animation-duration: 52s;
+    }
+
+    .cloud.one::before {
+      top: -26px;
+      left: 20px;
+      width: 62px;
+      height: 62px;
+    }
+
+    .cloud.one::after {
+      top: -18px;
+      left: 76px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .cloud.two {
+      top: 26%;
+      left: 118%;
+      width: 114px;
+      height: 32px;
+      opacity: 0.76;
+      animation-duration: 74s;
+      animation-delay: -24s;
+    }
+
+    .cloud.two::before {
+      top: -20px;
+      left: 14px;
+      width: 52px;
+      height: 52px;
+    }
+
+    .cloud.two::after {
+      top: -14px;
+      left: 56px;
+      width: 38px;
+      height: 38px;
+    }
+
+    .cloud.three {
+      top: 8%;
+      left: 130%;
+      width: 96px;
+      height: 28px;
+      opacity: 0.62;
+      animation-duration: 88s;
+      animation-delay: -58s;
+    }
+
+    .cloud.three::before {
+      top: -18px;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .cloud.three::after {
+      top: -12px;
+      left: 46px;
+      width: 32px;
+      height: 32px;
+    }
+
+    @keyframes drift {
+      to {
+        transform: translateX(-240vw);
+      }
+    }
+
+    .sun {
+      position: absolute;
+      top: 7%;
+      right: 8%;
+      width: clamp(96px, 12vw, 170px);
+      aspect-ratio: 1;
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 30%, #fff7d0 0 18%, #ffe28d 19% 54%, #f7b82f 55% 100%);
+      box-shadow: 10px 10px 0 rgba(16, 38, 43, 0.08);
+      animation: pulse 4.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      50% {
+        transform: scale(1.03);
+        box-shadow: 16px 16px 0 rgba(16, 38, 43, 0.09);
+      }
+    }
+
+    .ground {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 31%;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)),
+        linear-gradient(180deg, var(--road) 0%, var(--road-dark) 100%);
+      border-top: 3px solid var(--ink);
+    }
+
+    .road-edge {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .road-dashes {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 19%;
+      height: 11px;
+      background: repeating-linear-gradient(90deg, rgba(255, 215, 109, 0.96) 0 92px, transparent 92px 210px);
+      animation: road 0.72s linear infinite;
+    }
+
+    @keyframes road {
+      to {
+        background-position: -210px 0;
+      }
+    }
+
+    .motion-lines {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 29%;
+      height: 52%;
+      pointer-events: none;
+    }
+
+    .motion-lines span {
+      position: absolute;
+      display: block;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9));
+      animation: streak 0.95s linear infinite;
+    }
+
+    .motion-lines span:nth-child(1) {
+      top: 48%;
+      left: 62%;
+      width: 140px;
+    }
+
+    .motion-lines span:nth-child(2) {
+      top: 39%;
+      left: 72%;
+      width: 100px;
+      animation-delay: -0.32s;
+      opacity: 0.7;
+    }
+
+    .motion-lines span:nth-child(3) {
+      top: 58%;
+      left: 69%;
+      width: 76px;
+      animation-delay: -0.58s;
+      opacity: 0.55;
+    }
+
+    @keyframes streak {
+      0% {
+        transform: translateX(35vw);
+        opacity: 0;
+      }
+      14% {
+        opacity: 0.85;
+      }
+      100% {
+        transform: translateX(-36vw);
+        opacity: 0;
+      }
+    }
+
+    .ride {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 18px 14px rgba(16, 38, 43, 0.18));
+    }
+
+    .titlecard {
+      position: absolute;
+      left: clamp(1rem, 2.5vw, 1.6rem);
+      bottom: clamp(1rem, 2.5vw, 1.6rem);
+      z-index: 3;
+      max-width: min(46ch, 60vw);
+      padding: 1rem 1.1rem 1.05rem;
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(9, 24, 30, 0.14);
+    }
+
+    .titlecard h1 {
+      margin-bottom: 0.4rem;
+      font: 800 clamp(1.45rem, 2.6vw, 2.35rem) / 0.96 var(--display);
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .titlecard p {
+      max-width: 38ch;
+      font: 600 clamp(0.95rem, 1.3vw, 1.08rem) / 1.45 var(--body);
+    }
+
+    .titlecard strong {
+      color: var(--sea-deep);
+    }
+
+    @media (max-width: 760px) {
+      body {
+        overflow: auto;
+      }
+
+      .scene {
+        padding-top: 4.6rem;
+        padding-bottom: 8.6rem;
+      }
+
+      .stage {
+        height: min(68svh, 640px);
+        border-radius: 24px;
+      }
+
+      .titlecard {
+        left: 1rem;
+        right: 1rem;
+        bottom: 5.8rem;
+        max-width: none;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <div class="badge" aria-hidden="true">
+      <span>Animated page</span>
+      <strong>ChatGPT-5.4 Mini</strong>
+    </div>
+
+    <section class="stage" aria-label="Pelican riding a bicycle illustration">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="cloud one" aria-hidden="true"></div>
+      <div class="cloud two" aria-hidden="true"></div>
+      <div class="cloud three" aria-hidden="true"></div>
+      <div class="horizon" aria-hidden="true"></div>
+      <div class="motion-lines" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="ground" aria-hidden="true">
+        <div class="road-edge"></div>
+        <div class="road-dashes"></div>
+      </div>
+
+      <svg class="ride" viewBox="0 0 1200 760" role="img" aria-labelledby="sceneTitle sceneDesc">
+        <title id="sceneTitle">A pelican riding a bicycle</title>
+        <desc id="sceneDesc">A coastal pelican pedals a bright red bicycle along a road while clouds drift overhead.</desc>
+
+        <defs>
+          <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff" />
+            <stop offset="0.6" stop-color="#f4f8fc" />
+            <stop offset="1" stop-color="#dde5ee" />
+          </linearGradient>
+          <linearGradient id="beakGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ffd36a" />
+            <stop offset="1" stop-color="#f59c28" />
+          </linearGradient>
+          <linearGradient id="frameGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff7461" />
+            <stop offset="1" stop-color="#be3529" />
+          </linearGradient>
+        </defs>
+
+        <g id="rig">
+          <ellipse cx="590" cy="628" rx="360" ry="20" fill="#1a2730" opacity="0.17" />
+
+          <g id="wheelBack">
+            <circle cx="410" cy="560" r="92" fill="none" stroke="#1c2229" stroke-width="12" />
+            <circle cx="410" cy="560" r="82" fill="none" stroke="#d3dae1" stroke-width="3.2" opacity="0.92" />
+            <g stroke="#d3dae1" stroke-width="2.5" stroke-linecap="round">
+              <line x1="318" y1="560" x2="502" y2="560" />
+              <line x1="346" y1="502" x2="474" y2="618" />
+              <line x1="410" y1="468" x2="410" y2="652" />
+              <line x1="474" y1="502" x2="346" y2="618" />
+            </g>
+            <circle cx="410" cy="560" r="12" fill="#818a95" stroke="#505861" stroke-width="2" />
+          </g>
+
+          <g id="wheelFront">
+            <circle cx="730" cy="560" r="92" fill="none" stroke="#1c2229" stroke-width="12" />
+            <circle cx="730" cy="560" r="82" fill="none" stroke="#d3dae1" stroke-width="3.2" opacity="0.92" />
+            <g stroke="#d3dae1" stroke-width="2.5" stroke-linecap="round">
+              <line x1="638" y1="560" x2="822" y2="560" />
+              <line x1="666" y1="502" x2="794" y2="618" />
+              <line x1="730" y1="468" x2="730" y2="652" />
+              <line x1="794" y1="502" x2="666" y2="618" />
+            </g>
+            <circle cx="730" cy="560" r="12" fill="#818a95" stroke="#505861" stroke-width="2" />
+          </g>
+
+          <g stroke="url(#frameGrad)" stroke-width="12" stroke-linecap="round" fill="none">
+            <path d="M545 558 L410 560" />
+            <path d="M410 560 L476 458" />
+            <path d="M545 558 L476 458" />
+            <path d="M545 558 L646 492" />
+            <path d="M476 458 L646 458" />
+            <path d="M646 458 L730 560" />
+          </g>
+          <path d="M646 494 L662 446" stroke="#a32d27" stroke-width="13" stroke-linecap="round" fill="none" />
+          <path d="M668 446 L706 428" stroke="#2f353d" stroke-width="8" stroke-linecap="round" fill="none" />
+          <path d="M706 428 Q723 422 736 435 Q737 445 730 448" stroke="#2f353d" stroke-width="8" fill="none" stroke-linecap="round" />
+          <path d="M655 486 L755 486" stroke="#2f353d" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.8" />
+
+          <g id="rearCrank">
+            <line x1="545" y1="558" x2="545" y2="535" stroke="#545d67" stroke-width="7" stroke-linecap="round" />
+          </g>
+          <g id="frontCrank">
+            <line x1="545" y1="558" x2="545" y2="583" stroke="#545d67" stroke-width="7" stroke-linecap="round" />
+          </g>
+          <g id="chainring" transform="rotate(0 545 558)">
+            <circle cx="545" cy="558" r="18" fill="none" stroke="#8d959e" stroke-width="5" />
+            <circle cx="545" cy="558" r="18" fill="none" stroke="#66707b" stroke-width="1.4" stroke-dasharray="2.4 3" />
+            <circle cx="545" cy="558" r="5.5" fill="#66707b" />
+          </g>
+
+          <g id="backLeg">
+            <line id="backThigh" x1="480" y1="438" x2="493" y2="512" stroke="#f0dbbb" stroke-width="15" stroke-linecap="round" />
+            <line id="backShin" x1="493" y1="512" x2="545" y2="535" stroke="#e8b67c" stroke-width="9" stroke-linecap="round" />
+            <circle id="backKnee" cx="493" cy="512" r="6.5" fill="#f0dbbb" />
+            <g id="backFoot" transform="translate(545 535)">
+              <path d="M-16 -3 L14 -3 L18 5 L-14 5 Z" fill="#f0b56f" stroke="#d28a42" stroke-width="1.2" stroke-linejoin="round" />
+            </g>
+          </g>
+
+          <g id="frontLeg">
+            <line id="frontThigh" x1="500" y1="446" x2="512" y2="520" stroke="#f4e1c1" stroke-width="15" stroke-linecap="round" />
+            <line id="frontShin" x1="512" y1="520" x2="545" y2="583" stroke="#e9b87d" stroke-width="9" stroke-linecap="round" />
+            <circle id="frontKnee" cx="512" cy="520" r="6.5" fill="#f4e1c1" />
+            <g id="frontFoot" transform="translate(545 583)">
+              <path d="M-16 -3 L14 -3 L18 5 L-14 5 Z" fill="#f2bf79" stroke="#d28a42" stroke-width="1.2" stroke-linejoin="round" />
+            </g>
+          </g>
+
+          <g id="body">
+            <path d="M442 382 Q500 335 580 349 Q652 362 666 424 Q676 468 646 494 Q606 529 540 516 Q486 505 454 462 Q425 425 442 382 Z"
+                  fill="url(#bodyGrad)" />
+            <path d="M456 411 Q509 383 571 390 Q621 396 646 434 Q631 469 589 483 Q525 502 468 463 Q449 440 456 411 Z"
+                  fill="#ffffff" opacity="0.53" />
+            <path d="M454 462 Q498 486 549 484" stroke="#cfdae5" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8" />
+            <path d="M460 394 Q509 371 565 377 Q600 381 641 412" stroke="#b5c7d8" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7" />
+
+            <path d="M458 401 Q494 380 535 388 Q516 409 484 421 Q468 415 458 401 Z"
+                  fill="#d7e4ef" stroke="#a7bbcd" stroke-width="1.6" />
+            <path d="M470 409 Q496 396 529 402" stroke="#b8c8d8" stroke-width="1.6" fill="none" stroke-linecap="round" />
+
+            <g id="tail">
+              <path d="M451 404 Q417 394 394 374 L404 404 L386 397 L401 418 Q423 434 454 434 Z"
+                    fill="#dfe7f0" stroke="#c4d0db" stroke-width="1.4" stroke-linejoin="round" />
+            </g>
+
+            <path id="scarf" d="M544 350 L420 348" stroke="#ffd95c" stroke-width="12" stroke-linecap="round" />
+          </g>
+
+          <g id="neck">
+            <path d="M592 375 Q608 294 676 255" stroke="#f6f9fc" stroke-width="34" stroke-linecap="round" fill="none" />
+            <path d="M592 375 Q608 294 676 255" stroke="#d8e3ed" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.45" />
+          </g>
+
+          <g id="headGroup">
+            <ellipse cx="708" cy="260" rx="36" ry="29" fill="#f7fafc" />
+            <path d="M671 255 Q680 214 712 214 Q744 216 742 250 Q714 243 671 255 Z" fill="#e85a50" />
+            <path d="M680 230 Q703 221 726 231" stroke="#b23f37" stroke-width="2.8" fill="none" stroke-linecap="round" />
+            <path d="M686 244 L694 268" stroke="#cfc7be" stroke-width="2.6" stroke-linecap="round" />
+
+            <path d="M735 258 L839 278 L831 288 L735 276 Z" fill="url(#beakGrad)" stroke="#d79018" stroke-width="1.4" stroke-linejoin="round" />
+            <path id="pouch" d="M734 277 Q729 314 759 325 Q799 331 815 300 Q837 292 839 278 Q792 292 734 284 Z"
+                  fill="#f7ae36" stroke="#d79018" stroke-width="1.4" stroke-linejoin="round" />
+            <path d="M744 292 Q756 313 776 321" stroke="#dd9413" stroke-width="1.8" fill="none" opacity="0.55" />
+            <path d="M757 288 Q767 307 783 316" stroke="#dd9413" stroke-width="1.6" fill="none" opacity="0.4" />
+
+            <g id="eye">
+              <circle cx="710" cy="257" r="8.5" fill="#ffffff" />
+              <circle cx="712.4" cy="257" r="4.9" fill="#20272d" />
+              <circle cx="714" cy="255.5" r="1.5" fill="#ffffff" />
+            </g>
+          </g>
+
+          <g id="wingNear">
+            <path d="M490 390 Q547 370 613 388 Q575 420 521 430 Q497 414 490 390 Z"
+                  fill="#f3f7fb" stroke="#9fb3c4" stroke-width="1.7" stroke-linejoin="round" />
+            <path d="M506 397 Q549 387 600 394" stroke="#c3d2df" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            <path d="M507 409 Q545 402 591 409" stroke="#c3d2df" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.75" />
+          </g>
+
+          <g id="wingFar">
+            <path d="M513 372 Q583 356 648 378 Q611 403 555 406 Q525 394 513 372 Z"
+                  fill="#b9cad8" />
+          </g>
+        </g>
+      </svg>
+
+      <div class="titlecard">
+        <h1>Pelican on a Bicycle</h1>
+        <p>
+          A compact coastal rig built for <strong>ChatGPT-5.4 Mini</strong>, with spinning wheels,
+          a bobbing pelican, and a scarf that refuses to sit still.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var rig = document.getElementById('rig');
+      var wheelBack = document.getElementById('wheelBack');
+      var wheelFront = document.getElementById('wheelFront');
+      var chainring = document.getElementById('chainring');
+      var tail = document.getElementById('tail');
+      var scarf = document.getElementById('scarf');
+      var body = document.getElementById('body');
+      var neck = document.getElementById('neck');
+      var headGroup = document.getElementById('headGroup');
+      var wingNear = document.getElementById('wingNear');
+      var wingFar = document.getElementById('wingFar');
+      var pouch = document.getElementById('pouch');
+
+      var backThigh = document.getElementById('backThigh');
+      var backShin = document.getElementById('backShin');
+      var backKnee = document.getElementById('backKnee');
+      var backFoot = document.getElementById('backFoot');
+      var frontThigh = document.getElementById('frontThigh');
+      var frontShin = document.getElementById('frontShin');
+      var frontKnee = document.getElementById('frontKnee');
+      var frontFoot = document.getElementById('frontFoot');
+
+      var crankCenter = { x: 545, y: 558 };
+      var crankRadius = 24;
+      var upper = 75;
+      var lower = 70;
+      var cadence = Math.PI * 2 * 1.4;
+
+      function solveLeg(hip, foot, bend) {
+        var dx = foot.x - hip.x;
+        var dy = foot.y - hip.y;
+        var dist = Math.max(1, Math.hypot(dx, dy));
+        var limit = Math.min(dist, upper + lower - 1.5);
+        var ux = dx / dist;
+        var uy = dy / dist;
+        var base = (limit * limit + upper * upper - lower * lower) / (2 * limit);
+        var height = Math.sqrt(Math.max(0, upper * upper - base * base));
+        var kneeX = hip.x + ux * base + uy * height * bend;
+        var kneeY = hip.y + uy * base - ux * height * bend;
+        return { x: kneeX, y: kneeY };
+      }
+
+      function pointOnCrank(angle) {
+        return {
+          x: crankCenter.x + Math.cos(angle) * crankRadius,
+          y: crankCenter.y + Math.sin(angle) * crankRadius
+        };
+      }
+
+      function setLine(line, x1, y1, x2, y2) {
+        line.setAttribute('x1', x1.toFixed(2));
+        line.setAttribute('y1', y1.toFixed(2));
+        line.setAttribute('x2', x2.toFixed(2));
+        line.setAttribute('y2', y2.toFixed(2));
+      }
+
+      function draw(t) {
+        var wheelRotation = t * 255;
+        var crankRotation = t * 360 * 1.4;
+        var bob = Math.sin(t * 5.2) * 7;
+        var lean = Math.sin(t * 4.9) * 1.8;
+
+        rig.setAttribute('transform', 'translate(0 ' + bob.toFixed(2) + ')');
+        wheelBack.setAttribute('transform', 'rotate(' + wheelRotation.toFixed(2) + ' 410 560)');
+        wheelFront.setAttribute('transform', 'rotate(' + wheelRotation.toFixed(2) + ' 730 560)');
+        chainring.setAttribute('transform', 'rotate(' + crankRotation.toFixed(2) + ' 545 558)');
+        tail.setAttribute('transform', 'rotate(' + (Math.sin(t * 4.8) * 2.2).toFixed(2) + ' 430 405)');
+        body.setAttribute('transform', 'rotate(' + (Math.sin(t * 3.8) * 1.1).toFixed(2) + ' 548 430)');
+        neck.setAttribute('transform', 'rotate(' + lean.toFixed(2) + ' 594 376)');
+        headGroup.setAttribute('transform', 'translate(0 ' + (Math.sin(t * 5.6) * 1.4).toFixed(2) + ') rotate(' + (lean * 0.8).toFixed(2) + ' 708 260)');
+        wingNear.setAttribute('transform', 'rotate(' + (Math.sin(t * 4.1) * 2.6).toFixed(2) + ' 548 400)');
+        wingFar.setAttribute('transform', 'rotate(' + (Math.sin(t * 4.1 + 0.4) * 1.8).toFixed(2) + ' 566 384)');
+        pouch.setAttribute('transform', 'translate(0 ' + (Math.sin(t * 7.0) * 1.6).toFixed(2) + ')');
+        scarf.setAttribute('d',
+          'M544 350 ' +
+          'Q491 ' + (350 + Math.sin(t * 5.1) * 6).toFixed(2) + ' 437 ' + (346 + Math.sin(t * 4.4) * 8).toFixed(2) + ' ' +
+          'Q385 ' + (344 + Math.sin(t * 4.8 + 1.1) * 11).toFixed(2) + ' 348 ' + (348 + Math.sin(t * 5.3 + 0.7) * 9).toFixed(2));
+
+        var phaseBack = t * cadence + Math.PI;
+        var phaseFront = t * cadence;
+        var backFootPoint = pointOnCrank(phaseBack);
+        var frontFootPoint = pointOnCrank(phaseFront);
+        var backKneePoint = solveLeg({ x: 480, y: 438 }, backFootPoint, 1);
+        var frontKneePoint = solveLeg({ x: 500, y: 446 }, frontFootPoint, 1);
+
+        setLine(backThigh, 480, 438, backKneePoint.x, backKneePoint.y);
+        setLine(backShin, backKneePoint.x, backKneePoint.y, backFootPoint.x, backFootPoint.y);
+        backKnee.setAttribute('cx', backKneePoint.x.toFixed(2));
+        backKnee.setAttribute('cy', backKneePoint.y.toFixed(2));
+        backFoot.setAttribute('transform', 'translate(' + backFootPoint.x.toFixed(2) + ' ' + backFootPoint.y.toFixed(2) + ') rotate(' + (Math.sin(phaseBack) * 10).toFixed(2) + ')');
+
+        setLine(frontThigh, 500, 446, frontKneePoint.x, frontKneePoint.y);
+        setLine(frontShin, frontKneePoint.x, frontKneePoint.y, frontFootPoint.x, frontFootPoint.y);
+        frontKnee.setAttribute('cx', frontKneePoint.x.toFixed(2));
+        frontKnee.setAttribute('cy', frontKneePoint.y.toFixed(2));
+        frontFoot.setAttribute('transform', 'translate(' + frontFootPoint.x.toFixed(2) + ' ' + frontFootPoint.y.toFixed(2) + ') rotate(' + (Math.sin(phaseFront) * 10).toFixed(2) + ')');
+      }
+
+      if (reduced) {
+        draw(0.9);
+        return;
+      }
+
+      var start = 0;
+      function step(now) {
+        if (!start) {
+          start = now;
+        }
+        draw((now - start) / 1000);
+        requestAnimationFrame(step);
+      }
+
+      requestAnimationFrame(step);
+    })();
+  </script>
+    <style>
+      :root { --pob-nav-h: 64px; }
+      /* The scene sits on top of the bar; nothing renders underneath it. */
+      body { position: relative; }
+      .pob-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2147483000;
+        box-sizing: border-box;
+        height: var(--pob-nav-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        padding: 0 20px;
+        background: #11161c;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .pob-nav a {
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: background 0.2s;
+      }
+      .pob-nav a:hover,
+      .pob-nav a:focus-visible {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .pob-nav-step {
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      .pob-nav-home {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 112px;
+        padding: 6px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-align: center;
+      }
+      .pob-nav-home small {
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.65);
+      }
+    </style>
+    <nav class="pob-nav" aria-label="Gallery navigation">
+      <a class="pob-nav-step" id="prevBtn" href="#">&#8592; Previous</a>
+      <a class="pob-nav-home" href="index.html" aria-label="Back to the gallery from ChatGPT 5.4 Mini"><small>&#8962; Gallery</small><span>ChatGPT 5.4 Mini</span></a>
+      <a class="pob-nav-step" id="nextBtn" href="#">Next &#8594;</a>
+    </nav>
+    <script>
+      (function () {
+        // Keep this list alphabetical by model name when adding a rendition.
+        var pages = [
+          "bigpickle-pelican-bike.html",
+          "chatgpt-5.4-mini-pelican-bicycle.html",
+          "claude-opus-5-pelican-bicycle.html",
+          "claude-sonnet-4.6-pelican-bicycle.html",
+          "composer-2.5-fast-pelican-bicycle.html",
+          "pelican-bicycle-deepseekv4flash.html",
+          "gemini-3-6-flash-pelican-bicycle.html",
+          "glm-5.1-pelican-bicycle.html",
+          "kimi-k2.7-pelican-bike.html",
+          "pelican-bicycle-lagunas2.1.html",
+          "ling-pelican-bike.html",
+          "mimov2.5-pelican-bicycle.html",
+          "minimax-m3-pelican-bicycle.html",
+          "pelican-bicycle-nemotron.html",
+          "northminicode-pelican-bicycle.html",
+          "qwen-3.5-397b-a17b-pelican-bicycle.html"
+        ];
+        var current = window.location.pathname.split("/").pop();
+        var idx = pages.indexOf(current);
+        if (idx < 0) idx = 0;
+        document.getElementById("prevBtn").href = pages[(idx - 1 + pages.length) % pages.length];
+        document.getElementById("nextBtn").href = pages[(idx + 1) % pages.length];
+      })();
+    </script>
+</body>
+</html>
