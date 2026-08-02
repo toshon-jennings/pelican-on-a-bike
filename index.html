@@ -15,6 +15,8 @@
       --paper: #f7f1e3;
       --ink: #073b35;
       --ink-soft: #315c54;
+      --brand-blue: #56758b;
+      --brand-blue-soft: #c9d6df;
       --sea: #8dc9c0;
       --sea-light: #d5ece4;
       --coral: #e8583e;
@@ -41,7 +43,7 @@
       background-color: var(--paper);
       background-image:
         radial-gradient(circle at 12% 20%, rgba(7, 59, 53, 0.035) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 74% 62%, rgba(232, 88, 62, 0.025) 0 1px, transparent 1.6px);
+        radial-gradient(circle at 74% 62%, rgba(86, 117, 139, 0.05) 0 1px, transparent 1.6px);
       background-size: 11px 13px, 17px 19px;
       font-family: var(--body);
       overflow-x: hidden;
@@ -133,7 +135,7 @@
       left: 0;
       height: 3px;
       content: "";
-      background: var(--coral);
+      background: var(--brand-blue);
       transform: scaleX(0);
       transform-origin: right;
       transition: transform 180ms ease;
@@ -179,7 +181,7 @@
       height: 5px;
       margin: 1.6rem 0 1.15rem;
       content: "";
-      background: var(--coral);
+      background: linear-gradient(90deg, var(--coral) 0 62%, var(--brand-blue) 62% 100%);
       transform: rotate(-0.5deg);
     }
 
@@ -407,7 +409,7 @@
       left: 0;
       height: 9px;
       content: "";
-      background: linear-gradient(90deg, var(--coral) 0 33%, var(--sun) 33% 66%, var(--sea) 66%);
+      background: linear-gradient(90deg, var(--coral) 0 33%, var(--sun) 33% 66%, var(--brand-blue) 66%);
     }
 
     .lineup-heading {
