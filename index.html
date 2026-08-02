@@ -88,6 +88,8 @@
     }
 
     .brand {
+      position: relative;
+      isolation: isolate;
       display: block;
       width: 76px;
       aspect-ratio: 1;
@@ -99,8 +101,9 @@
       transition: transform 180ms ease;
     }
 
-    .brand:hover {
-      transform: rotate(-8deg);
+    .brand:hover,
+    .brand:focus-visible {
+      transform: translateY(-2px) rotate(-3deg) scale(1.03);
     }
 
     .brand img {
@@ -109,8 +112,13 @@
       height: 100%;
       border-radius: inherit;
       object-fit: cover;
-      transform: scale(1.18);
       transform-origin: center;
+      animation: logo-mark-spin 10s linear infinite;
+    }
+
+    .brand:hover img,
+    .brand:focus-visible img {
+      animation-duration: 1.15s;
     }
 
     .site-nav {
@@ -585,6 +593,11 @@
 
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    @keyframes logo-mark-spin {
+      from { transform: scale(1.18) rotate(0); }
+      to { transform: scale(1.18) rotate(1turn); }
     }
 
     @keyframes ride-bob {
