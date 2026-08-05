@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longcat 2.0 Pelican on a Bike</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--pob-nav-h:64px}
+body{position:relative;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:calc(100vh - var(--pob-nav-h));overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;display:flex;justify-content:center;align-items:center}
+.scene{position:relative;width:900px;height:600px;overflow:hidden}
+.stars{position:absolute;top:0;left:0;width:100%;height:60%}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s ease-in-out infinite alternate}
+@keyframes twinkle{0%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1.2)}}
+.moon{position:absolute;top:40px;right:80px;width:90px;height:90bg-radial-gradient(circle at 35% 35%,#f5f5dc 0%,#ddd8b8 70%,#c4bf9c 100%);border-radius:50%;box-shadow:0 0 40px rgba(245,245,220,.4),0 0 80px rgba(245,245,220,.2)}
+.moon::after{content:'';position:absolute;top:15px;left:20px;width:20px;height:20px;background:rgba(0,0,0,.08);border-radius:50%}
+.moon::before{content:'';position:absolute;top:40px;left:35px;width:12px;height:12px;background:rgba(0,0,0,.06);border-radius:50%}
+.mountains{position:absolute;bottom:120px;left:0;width:100%;height:180px}
+.mountain{position:absolute;bottom:0;border-left:120px solid transparent;border-right:120px solid transparent;border-bottom:160px solid #1a1a3e}
+.mountain:nth-child(1){left:-40px;opacity:.7;transform:scale(1.2)}
+.mountain:nth-child(2){left:160px;opacity:.8;transform:scale(1)}
+.mountain:nth-child(3){left:380px;opacity:.6;transform:scale(1.4)}
+.mountain:nth-child(4){left:560px;opacity:.9;transform:.9}
+.road{position:absolute;bottom:0;left:0;width:100%;height:120px;background:linear-gradient(180deg,#2a2a3a 0%,#1a1a28 100%);border-top:3px solid #3a3a5a}
+.road::after{content:'';position:absolute;top:50%;left:0;width:100%;height:4px;background:repeating-linear-gradient(90deg,#f0d040 0 40px,transparent 40px 80px);animation:roadMove .8s linear infinite}
+@keyframes roadMove{0%{transform:translateX(0)}100%{transform:translateX(-80px)}}
+.bike-container{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);animation:bob .3s ease-in-out infinite alternate}
+@keyframes bob{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(-4px)}}
+.bike{position:relative;width:280px;height:160px}
+.wheel{position:absolute;bottom:0;width:100px;height:100px;border:5px solid #e0e0e0;border-radius:50%;animation:spin .6s linear infinite}
+.wheel::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:#ff6b6b;border-radius:50%;border:3px solid #e0e0e0}
+.spoke{position:absolute;top:50%;left:50%;width:2px;height:44px;background:rgba(224,224,224,.6);transform-origin:center center}
+.spoke:nth-child(1){transform:translate(-50%,-50%) rotate(0deg)}
+.spoke:nth-child(2){transform:translate(-50%,-50%) rotate(60deg)}
+.spoke:nth-child(3){transform:translate(-50%,-50%) rotate(120deg)}
+.wheel-r{right:0}
+.wheel-f{left:0}
+.frame{position:absolute}
+.frame-tube{position:absolute;background:#ff6b6b;border-radius:4px}
+.tube-bottom{bottom:20px;left:40px;width:160px;height:6px;transform:rotate(-2deg)}
+.tube-seat{bottom:20px;left:50px;width:6px;height:70px;transform:rotate(-12deg)}
+.tube-top{bottom:50px;left:50px;width:100px;height:5px;transform:rotate(-38deg)}
+.tube-down{bottom:20px;left:190px;width:5px;height:70px;transform:rotate(8deg)}
+.tube-fork{bottom:20px;left:220px;width:5px;height:60px;transform:rotate(20deg)}
+.handlebar{position:absolute;top:12px;right:20px;width:4px;height:40px;background:#e0e0e0;border-radius:2px;transform:rotate(20deg)}
+.handlebar::after{content:'';position:absolute;top:0;left:-8px;width:20px;height:4px;background:#e0e0e0;border-radius:2px;transform:rotate(-20deg)}
+.saddle{position:absolute;top:38px;left:52px;width:36px;height:10px;background:#4a3728;border-radius:6px 6px 4px 4px}
+.pelican{position:absolute;top:-60px;left:30px;width:180px;height:160px}
+.body-pelo{position:absolute;bottom:10px;left:20px;width:120px;height:90px;background:linear-gradient(135deg,#f0e6d3 0%,#d4c4a8 100%);border-radius:50% 50% 45% 45%;border:3px solid #8b7355;overflow:hidden}
+.body-pelo::after{content:'';position:absolute;bottom:5px;left:15px;width:80px;height:55px;background:rgba(255,255,255,.3);border-radius:50%}
+.wing-pelo{position:absolute;bottom:20px;left:-10px;width:90px;height:50px;background:linear-gradient(135deg,#c9b896 0%,#a89070 100%);border-radius:0 60% 60% 0;border:3px solid #8b7355;transform-origin:left center;animation:flap .7s ease-in-out infinite alternate}
+@keyframes flap{0%{transform:rotate(-20deg) scaleY(.9)}100%{transform:rotate(10deg) scaleY(1)}}
+.neck-pelo{position:absolute;bottom:80px;left:75px;width:30px;height:60px;background:linear-gradient(135deg,#f0e6d3 0%,#d4c4a8 100%);border-radius:12px;border:3px solid #8b7355;transform:rotate(15deg);transform-origin:bottom center;animation:neckBob .9s ease-in-out infinite alternate}
+@keyframes neckBob{0%{transform:rotate(10deg)}100%{transform:rotate(20deg)}}
+.head-pelo{position:absolute;bottom:130px;left:78px;width:55px;height:50px;background:linear-gradient(135deg,#f0e6d3 0%,#d4c4a8 100%);border-radius:50% 50% 45% 45%;border:3px solid #8b7355;z-index:3;animation:headTilt .8s ease-in-out infinite alternate}
+@keyframes headTilt{0%{transform:rotate(-5deg)}100%{transform:rotate(5deg)}}
+.beak-pelo{position:absolute;top:12px;left:-22px;width:50px;height:22px;background:linear-gradient(135deg,#ffb347 0%,#ff8c00 100%);border-radius:0 12px 12px 0;border:3px solid #8b7355;border-left:none}
+.beak-pelo::after{content:'';position:absolute;top:14px;left:0;width:38px;height:10px;background:#e07800;border-radius:0 0 8px 0;border:2px solid #8b7355;border-top:none;border-left:none}
+.eye-pelo{position:absolute;top:10px;left:18px;width:14px;height:14px;background:#fff;border-radius:50%;border:2px solid #8b7355}
+.eye-pelo::after{content:'';position:absolute;top:3px;left:4px;width:6px;height:6px;background:#2a1a0a;border-radius:50%}
+.eye-pelo::before{content:'';position:absolute;top:2px;left:6px;width:3px;height:3px;background:#fff;border-radius:50%}
+.pouch-pelo{position:absolute;bottom:8px;left:25px;width:35px;height:20px;background:rgba(255,140,0,.4);border-radius:0 0 15px 15px;border:2px solid #8b7355;border-top:none}
+.hat-pelo{position:absolute;top:-8px;left:5px;width:50px;height:30px;background:linear-gradient(135deg,#4a90d9 0%,#2c5fa1 100%);border-radius:50% 50% 10% 10%;border:2px solid #1a3a5c}
+.hat-pelo::after{content:'';position:absolute;bottom:-8px;left:-8px;width:66px;height:10px;background:#2c5fa1;border-radius:20px;border:2px solid #1a3a5c}
+.hat-star{position:absolute;top:8px;left:20px;width:12px;height:12px;background:#f0d040;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.leg-l,.leg-r{position:absolute;bottom:-5px;width:8px;height:40px;background:linear-gradient(135deg,#ffb347 0%,#e08800 100%);border-radius:4px;border:2px solid #8b7355;z-index:2;transform-origin:top center}
+.leg-l{left:60px;animation:pedalL .8s ease-in-out infinite}
+.leg-r{left:60px;animation:pedalR .8s ease-in-out infinite}
+@keyframes pedalL{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
+@keyframes pedalR{0%,100%{transform:rotate(30deg)}50%{transform:rotate(-30deg)}}
+.foot{position:absolute;bottom:-8px;left:-5px;width:18px;height:8px;background:#ffb347;border-radius:4px;border:2px solid #8b7355}
+.pedal{position:absolute;width:22px;height:5px;background:#e0e0e0;border-radius:3px;border:1px solid #aaa}
+.pedal-1{bottom:45px;left:92px;animation:pedalMove .8s ease-in-out infinite}
+.pedal-2{bottom:25px;left:80px;animation:pedalMove .8s ease-in-out infinite reverse}
+@keyframes pedalMove{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(10px) rotate(90deg)}50%{transform:translateY(0) rotate(180deg)}75%{transform:translateY(-10px) rotate(270deg)}}
+.crank{position:absolute;bottom:35px;left:90px;width:24px;height:24px;border:3px solid #e0e0e0;border-radius:50%;animation:spin .8s linear infinite}
+.crank::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#ff6b6b;border-radius:50%}
+.scarf{position:absolute;bottom:90px;left:60px;width:60px;height:14px;background:linear-gradient(90deg,#e74c3c,#c0392b);border-radius:7px;transform:rotate(12deg);transform-origin:left center;animation:scarfWave .6s ease-in-out infinite alternate;z-index:4}
+.scarf::after{content:'';position:absolute;top:4px;right:-20px;width:25px;height:16px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:0 0 50% 0;transform:rotate(-20deg);animation:scarfTail .5s ease-in-out infinite alternate}
+@keyframes scarfWave{0%{transform:rotate(10deg) scaleX(1)}100%{transform:rotate(16deg) scaleX(1.05)}}
+@keyframes scarfTail{0%{transform:rotate(-20deg) translateX(0)}100%{transform:rotate(-35deg) translateX(-5px)}}
+.scarf-knot{position:absolute;top:-2px;left:0;width:12px;height:18px;background:#c0392b;border-radius:4px;border:1px solid #922b21}
+.speed-lines{position:absolute;bottom:140px;left:0;width:100%;height:60px;pointer-events:none}
+.sline{position:absolute;height:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);border-radius:2px;animation:speedFly .5s linear infinite}
+.sline:nth-child(1){top:10px;right:0;width:80px;animation-delay:0s}
+.sline:nth-child(2){top:30px;right:20px;width:60px;animation-delay:-.15s}
+.sline:nth-child(3){top:50px;right:10px;width:70px;animation-delay:-.3s}
+.sline:nth-child(4){top:20px;right:40px;width:50px;animation-delay:-.45s}
+@keyframes speedFly{0%{transform:translateX(0);opacity:0}20%{opacity:.8}100%{transform:translateX(-400px);opacity:0}}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="stars">
+    <div class="star" style="top:10%;left:15%;width:3px;height:3px;animation-delay:0s"></div>
+    <div class="star" style="top:20%;left:45%;width:2px;height:2px;animation-delay:.5s"></div>
+    <div class="star" style="top:8%;left:70%;width:4px;height:4px;animation-delay:1s"></div>
+    <div class="star" style="top:30%;left:85%;width:2px;height:2px;animation-delay:1.5s"></div>
+    <div class="star" style="top:15%;left:30%;width:3px;height:3px;animation-delay:.3s"></div>
+    <div class="star" style="top:25%;left:55%;width:2px;height:2px;animation-delay:.8s"></div>
+    <div class="star" style="top:5%;left:90%;width:3px;height:3px;animation-delay:1.2s"></div>
+    <div class="star" style="top:35%;left:10%;width:2px;height:2px;animation-delay:.7s"></div>
+    <div class="star" style="top:12%;left:60%;width:3px;height:3px;animation-delay:1.8s"></div>
+    <div class="star" style="top:18%;left:25%;width:2px;height:2px;animation-delay:.2s"></div>
+  </div>
+  <div class="moon"></div>
+  <div class="mountains">
+    <div class="mountain"></div>
+    <div class="mountain"></div>
+    <div class="mountain"></div>
+    <div class="mountain"></div>
+  </div>
+  <div class="speed-lines">
+    <div class="sline"></div>
+    <div class="sline"></div>
+    <div class="sline"></div>
+    <div class="sline"></div>
+  </div>
+  <div class="bike-container">
+    <div class="bike">
+      <div class="wheel wheel-f">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      <div class="wheel wheel-r">
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+        <div class="spoke"></div>
+      </div>
+      <div class="frame">
+        <div class="frame-tube tube-bottom"></div>
+        <div class="frame-tube tube-seat"></div>
+        <div class="frame-tube tube-top"></div>
+        <div class="frame-tube tube-down"></div>
+        <div class="frame-tube tube-fork"></div>
+      </div>
+      <div class="handlebar"></div>
+      <div class="saddle"></div>
+      <div class="crank"></div>
+      <div class="pedal pedal-1"></div>
+      <div class="pedal pedal-2"></div>
+    </div>
+    <div class="pelican">
+      <div class="body-pelo"></div>
+      <div class="wing-pelo"></div>
+      <div class="neck-pelo"></div>
+      <div class="head-pelo">
+        <div class="beak-pelo"></div>
+        <div class="eye-pelo"></div>
+        <div class="pouch-pelo"></div>
+        <div class="hat-pelo">
+          <div class="hat-star"></div>
+        </div>
+      </div>
+      <div class="scarf">
+        <div class="scarf-knot"></div>
+      </div>
+      <div class="leg-l"><div class="foot"></div></div>
+      <div class="leg-r"><div class="foot"></div></div>
+    </div>
+  </div>
+  <div class="road"></div>
+</div>
+
+<style>
+  :root { --pob-nav-h: 64px; }
+  /* The scene sits on top of the bar; nothing renders underneath it. */
+  body { position: relative; }
+  .pob-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2147483000;
+    box-sizing: border-box;
+    height: var(--pob-nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 0 20px;
+    background: #11161c;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .pob-nav a {
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+  }
+  .pob-nav a:hover,
+  .pob-nav a:focus-visible {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  .pob-nav-step {
+    padding: 8px 16px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .pob-nav-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 112px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+  .pob-nav-home small {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+  }
+</style>
+<nav class="pob-nav" aria-label="Gallery navigation">
+  <a class="pob-nav-step" id="prevBtn" href="#">&#8592; Previous</a>
+  <a class="pob-nav-home" href="index.html" aria-label="Back to the gallery from Longcat 2.0"><small>&#8962; Gallery</small><span>Longcat 2.0</span></a>
+  <a class="pob-nav-step" id="nextBtn" href="#">Next &#8594;</a>
+</nav>
+<script>
+  (function () {
+    // Keep this list alphabetical by model name when adding a rendition.
+    var pages = [
+      "bigpickle-pelican-bike.html",
+      "chatgpt-5.4-mini-pelican-bicycle.html",
+      "codex-pelican-bicycle.html",
+      "claude-opus-5-pelican-bicycle.html",
+      "claude-sonnet-4.6-pelican-bicycle.html",
+      "composer-2.5-fast-pelican-bicycle.html",
+      "pelican-bicycle-deepseekv4flash.html",
+      "gemini-3-6-flash-pelican-bicycle.html",
+      "glm-5.1-pelican-bicycle.html",
+      "kimi-k2.7-pelican-bike.html",
+      "pelican-bicycle-lagunas2.1.html",
+      "ling-pelican-bike.html",
+      "pelican-bicycle-longcat2.0.html",
+      "mimov2.5-pelican-bicycle.html",
+      "minimax-m3-pelican-bicycle.html",
+      "pelican-bicycle-nemotron.html",
+      "northminicode-pelican-bicycle.html",
+      "qwen-3.5-397b-a17b-pelican-bicycle.html"
+    ];
+    var current = window.location.pathname.split("/").pop();
+    var idx = pages.indexOf(current);
+    if (idx < 0) idx = 0;
+    document.getElementById("prevBtn").href = pages[(idx - 1 + pages.length) % pages.length];
+    document.getElementById("nextBtn").href = pages[(idx + 1) % pages.length];
+  })();
+</script>
+</body>
+</html>
