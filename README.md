@@ -1,4 +1,4 @@
-# Pelicans on Bikes
+# Pelicans On Bikes
 
 A collection of CSS animation tests: each file is a different AI model's attempt at drawing a pelican riding a bicycle.
 
